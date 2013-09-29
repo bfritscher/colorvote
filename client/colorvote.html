@@ -1,0 +1,204 @@
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="description" content="Realtime voting with color cards">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>ColorVote</title>
+	<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-44448840-1');
+  ga('send', 'pageview');
+
+</script>
+</head>
+
+<body>
+	<div class="wrapper">
+	{{> page}}
+	</div>
+</body>
+
+<template name="page">
+  {{#if session 'showlogin'}}
+	{{loginButtons align="right"}}
+  {{/if}}
+  {{#if currentPageIs 'roomSelection'}}
+	{{> roomSelection}}	
+  {{/if}}
+  {{#if currentPageIs 'roomVoter'}}
+	{{> roomVoter}}	
+  {{/if}}
+  {{#if currentPageIs 'roomAsker'}}
+	{{> roomAsker}}	
+  {{/if}}
+</template>
+
+<template name="logo">
+  <h1 class="logo">ColorVote</h1>
+  <div id="logo">
+	<div></div>
+	<div></div>
+	<div></div>
+	<div></div>
+	<div></div>
+	<div></div>
+	<div></div>
+	<div></div>
+  </div>
+</template>
+
+<template name="roomSelection">
+	{{> logo}}
+	<div class="rooms">
+	{{#each rooms}}
+		{{> roomSelectionItem}}
+	{{/each}}
+	<!--
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	<div class="room">Test</div>
+	-->
+	{{#if isAdmin}}
+		<div class="room add-room">+ Add room</div>
+	{{/if}}
+  </div>
+</template>
+
+
+
+<template name="roomSelectionItem">
+  <div class="room">{{name}} ({{userCount}}) {{#if isAdmin}}<span class="rename-room">renommer</span>{{/if}}</div>
+</template>
+
+<template name="roomName">
+  <div class="room-title">{{room}}</div>
+  <div class="room-stats">{{votes}}<br/><span>{{presenceCount}}</span></div>
+</template>
+
+<template name="roomVoter">
+{{>swipeVote}}
+{{> roomName}}
+{{#if votenow}}
+<div class="votenow">Votez Maintenant</div>
+{{/if}}
+{{#if stopped}}
+<div class="voting-stopped">
+<h1>Votation Terminé</h1>
+</div>
+{{/if}}
+{{>backLink}}
+</template>
+
+<template name="swipeVote">
+<div class="swiper-container voter">
+	<div class="swiper-wrapper">
+	{{#each choices}}
+			<div class="swiper-slide color-{{no}}"><div class="title">{{no}}</div></div>
+	{{/each}}
+	</div>
+	<div class="pagination"></div>
+</div>
+</template>
+
+<template name="backLink">
+	<div class="backLink"><</div>
+</template>
+
+<template name="choice">
+	<div class="choice color-{{no}} {{#if currentVoteIs no}}active{{/if}}">{{no}}</div>
+</template>
+
+<template name="roomAsker">
+	{{> logo}}
+	{{> roomName}}
+	<div id="voting-admin-panel">
+		{{>timer}}
+		
+		{{> questionAction}}
+	
+		votes: {{>votesCount}}
+		<div id="showqrcode" title="afficher le QRCode">{{> qrCode hrefThumb}}</div>
+		<img id="toggleHistory" alt="afficher historique" title="afficher historique"  src="/history_icon.png"/>
+		<img id="toggleResults" alt="afficher résultats" title="afficher résultats"  src="/chart_icon.png"/>
+		{{>backLink}}
+	</div>
+	{{#if session 'showresults'}}
+	<div class="liveresults">
+		{{> resultChart data}}
+		{{#unless stopped}}
+		<div>
+			<label>nombres de choix <input type="range" min="2" max="{{Config.numMaxAnswers}}" value="{{possibleAnswers}}" /></label>
+		</div>
+		{{/unless}}
+	</div>
+	{{/if}}
+	{{#if session 'showqrcode'}}
+		<div id="qrCodePanel">
+			{{> qrCode href}}
+			<h1>{{href.href}}</h1>
+		</div>
+	{{/if}}
+	{{> history}}
+	
+</template>
+<template name="questionAction">
+	{{#if stopped}}<button id="questionAction" class="new">NOUVEAU</button>{{/if}}
+	{{#unless stopped}}<button id="questionAction" class="stop">TERMINER</button>{{/unless}}
+</template>
+<template name="votesCount">
+<span class="votesCount">{{votesCount}}</span>
+</template>
+<template name="timer">
+<span class="timer">{{session 'elapsedTime'}}</span>
+</template>
+<template name="history">
+{{#if session 'showhistory'}}
+<div class="history">
+<div class="swiper-container">
+	<div class="swiper-wrapper preload">
+	{{#each questionsHistory}}
+		<div class="swiper-slide questionHistory">
+			{{> resultChart result}}
+			<div class="chart-info">&#916; {{time}} <span class="date">&#64; {{date}}</span><span class="count">N {{votes.length}}</span></div>
+		</div>
+	{{/each}}
+	</div>
+	<div class="pagination"></div>
+</div>	
+</div>
+{{/if}}
+</template>
+<template name="resultChart">
+    {{#constant}}
+      <svg width="500" height="500" class="chart">
+		<g class="transform">
+			<g class="x axis"></g>
+			<g class="y axis"></g>
+		</g>
+      </svg>
+    {{/constant}}
+</template>
+<template name="qrCode">
+    {{#constant}}
+	<div class="qrcode"></div>
+	{{/constant}}
+</template>
