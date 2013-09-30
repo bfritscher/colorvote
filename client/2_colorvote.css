@@ -1,5 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,700);
-* {
+*:not(input) {
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
@@ -7,8 +7,6 @@
 	-ms-user-select: none;
 	user-select: none;
 }
-
-
 .choice.active{
 	border: 1px solid red;
 }
@@ -37,7 +35,7 @@
 	box-shadow: none;
 	background-image:none;
 }
- 
+
 .chart{
 	background-color: white;
 	display: block;
@@ -141,6 +139,11 @@ h1.logo{
 	left: 16px;
 	color: white;
 	margin: 0;
+}
+
+#logo{
+	background-color: #BF62A6;
+	height: 60px;
 }
 
 #logo div{

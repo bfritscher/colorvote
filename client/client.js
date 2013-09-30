@@ -33,6 +33,7 @@ window.onhashchange = function(){
 };
 
 Meteor.startup(function () {
+	FastClick.attach(document.body);
 	//subscriptions
 	Meteor.subscribe("userPresence");
 	Meteor.subscribe("userData"); //get user.type field
@@ -215,7 +216,7 @@ Template.roomSelection.rooms = function(){
 
 Template.roomSelection.isAdmin = isAdmin;
 Template.roomSelection.events({
-	'tap .room.add-room, click .room.add-room': function(event){
+	'click .room.add-room': function(event){
 		event.stopImmediatePropagation();
 		var name = prompt('Room name?');
 		if(name){
@@ -226,7 +227,7 @@ Template.roomSelection.events({
 
 Template.roomSelectionItem.isAdmin = isAdmin;
 Template.roomSelectionItem.events({
-	'tap .room, click .room': function(){
+	'click .room': function(){
 		Session.set('roomId', this._id);
 		if(isAdmin()){
 			Session.set('currentPage', 'roomAsker');
@@ -234,7 +235,7 @@ Template.roomSelectionItem.events({
 			Session.set('currentPage', 'roomVoter');
 		}
 	},
-	'tap .room .rename-room, click .room .rename-room': function(event){
+	'click .room .rename-room': function(event){
 		event.stopImmediatePropagation();
 		var name = prompt('Room name?', this.name);
 		if(name && name.length > 0 && name != this.name){
@@ -288,7 +289,7 @@ Template.choice.currentVoteIs = function(choice){
 	return Session.get('vote') === choice;
 };
 Template.choice.events({
-	'tap .choice, click .choice': function(){
+	'click .choice': function(){
 		//move to DATA
 		Session.set('vote', this.no);
 		Meteor.call('vote', Session.get('currentQuestionId'), this.no);
@@ -315,7 +316,7 @@ Template.roomAsker.events({
 	'change input': function(event){
 		Meteor.call('changeNumAnswers', Session.get('currentQuestionId'), Number(event.currentTarget.value));
 	},
-	'tap #questionAction, click #questionAction': function(event){
+	'click #questionAction': function(event){
 		//auto show/hide result on stop (if in reactive then toggle problem..)
 		var question = Questions.findOne(Session.get('currentQuestionId'));
 		if(question.state === 'started'){
@@ -326,22 +327,25 @@ Template.roomAsker.events({
 		Meteor.call('questionAction', Session.get('currentQuestionId'),function (error, result) { console.log(error);} );
 		
 	},
-	'tap #toggleResults, click #toggleResults': function(event){
+	'click #toggleResults': function(event){
 		Session.set('showresults', !Session.get('showresults'));
 	},
-	'tap #qrCodePanel, click #qrCodePanel': function(event){
+	'click #qrCodePanel': function(event){
 		Session.set('showqrcode', false);
 	},
-	'tap #showqrcode, click #showqrcode': function(event){
+	'click #showqrcode': function(event){
 		Session.set('showqrcode', true);
 	},
-	'tap #toggleHistory, click #toggleHistory': function(event){
+	'click #toggleHistory': function(event){
 		Session.set('showhistory', !Session.get('showhistory'));
+	},
+	'click .logo': function(event){
+		Session.set('currentPage', 'roomSelection');
 	}
 });
 
 Template.backLink.events({
-	'tap .backLink, click .backLink': function(event){
+	'click .backLink': function(event){
 		Session.set('currentPage', 'roomSelection');
 	}
 });
