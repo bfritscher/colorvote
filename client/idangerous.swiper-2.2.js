@@ -278,7 +278,7 @@ var Swiper = function (selector, params) {
             var beforeSlide;
 
             if (params.loop) {
-                beforeSlide = _this.slides[index + 1 + _this.loopedSlides];
+                beforeSlide = _this.slides[Math.min(index + 1 + _this.loopedSlides, _this.slides.length-1)]; //FIX ie
                 _this.wrapper.insertBefore(el, beforeSlide);
                 _this.removeLoopedSlides();
                 _this.calcSlides();

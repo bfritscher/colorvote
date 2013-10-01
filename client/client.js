@@ -266,21 +266,60 @@ Template.swipeVote.choices = function(){
 };
 
 Template.swipeVote.rendered = function(){
-	Template.swipeVote.swiper = new Swiper('.swiper-container.voter',{
-		pagination: '.pagination',
-		paginationClickable: true,
-		loop: true,
-		watchActiveIndex: true,
-		queueEndCallbacks: true,
-		onSlideChangeEnd: function(swiper){
-			Session.set('vote', swiper.activeLoopIndex);
-			Meteor.call('vote', Session.get('currentQuestionId'), swiper.activeLoopIndex);
-		},
-		initialSlide: Session.get('vote') || 0
-	});
-	Deps.autorun(function () {
-		Template.swipeVote.swiper.swipeTo(Session.get('vote'), 0);
-	});
+	console.log('swiper rendered');
+	var choices = Template.swipeVote.choices();
+	if(choices.length > 0){
+		if(!Template.swipeVote.swiper){
+			console.log('swiper init');
+			Template.swipeVote.swiper = new Swiper('.swiper-container.voter',{
+				pagination: '.pagination',
+				paginationClickable: true,
+				createPagination: true,
+				loop: true,
+				watchActiveIndex: true,
+				queueEndCallbacks: true,
+				onSlideChangeEnd: function(swiper){
+					Session.set('vote', swiper.activeLoopIndex);
+					Meteor.call('vote', Session.get('currentQuestionId'), swiper.activeLoopIndex);
+				}
+			});
+		}
+		
+		var toCreate = choices.length+2 - Template.swipeVote.swiper.slides.length;
+		for(var i=0; i< toCreate;i++){
+			Template.swipeVote.swiper.createSlide('<div class="title"></div>').append();
+		}
+		
+		for(var i=0; i< choices.length+2;i++){
+			var slide = Template.swipeVote.swiper.getSlide(i);
+			if(choices.length>0){
+				//fix loop
+				var j=i;
+				if(j === choices.length+1){
+					j=0;
+				}else if(j===0){
+					j=choices.length-1;
+				}else{
+					j=i-1;
+				}
+				slide.className = 'swiper-slide color-' + choices[j].no;
+				slide.querySelector('.title').textContent = choices[j].no;
+			}
+		};
+		while(choices.length+2 < Template.swipeVote.swiper.slides.length){
+			var slide = Template.swipeVote.swiper.getSlide(choices.length+2);
+			if(slide){
+				if(slide.isActive()){
+					Template.swipeVote.swiper.swipeTo(0, 0);
+				}
+				slide.remove();
+			}
+		}
+		
+		if(Template.swipeVote.swiper.activeLoopIndex != Session.get('vote') && Session.get('vote') < choices.length){
+			Template.swipeVote.swiper.swipeTo(Session.get('vote'), 0);
+		}
+	}
 };
 Template.swipeVote.destroyed = function () {
 	if(Template.swipeVote.swiper){
