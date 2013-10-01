@@ -139,6 +139,7 @@ h1.logo{
 	left: 16px;
 	color: white;
 	margin: 0;
+	cursor: pointer;
 }
 
 #logo{
@@ -390,17 +391,18 @@ body {
 	padding: 10px 10px 0 10px;
 }
 .room-title{
-	width: 100%;
+	width: 60%;
 	height: 40px;
 	position: absolute;
 	z-index: 500;
 	top: 12px;
-	left:0;
+	left: 50%;
 	text-align: center;
 	font-size: 24px;
 	line-height: 28px;
 	color: #fff;
 	opacity: 0.6;
+	margin-left: -30%;
 }
 .room-stats{
 	height: 40px;
@@ -450,7 +452,7 @@ body {
 	background: rgba(255, 255, 255,0.9);
 	top:0;
 	left:0;
-	z-index: 999;
+	z-index: 1001;
 	text-align:center;
 }
 #qrCodePanel h1{

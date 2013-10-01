@@ -43,6 +43,7 @@
 </template>
 
 <template name="logo">
+<div>
   <h1 class="logo">ColorVote</h1>
   <div id="logo">
 	<div></div>
@@ -54,6 +55,7 @@
 	<div></div>
 	<div></div>
   </div>
+</div>  
 </template>
 
 <template name="roomSelection">
@@ -62,26 +64,6 @@
 	{{#each rooms}}
 		{{> roomSelectionItem}}
 	{{/each}}
-	<!--
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	<div class="room">Test</div>
-	-->
 	{{#if isAdmin}}
 		<div class="room add-room">+ Add room</div>
 	{{/if}}

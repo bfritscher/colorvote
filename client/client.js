@@ -28,7 +28,7 @@ window.onhashchange = function(){
 	var room = Rooms.findOne({name: location.hash.slice(1)})
 	handleRoomRedirect(room);
 	if(!room){
-		Session.set('currentPage', 'roomSelection');
+		roomSelectionScreen();
 	}
 };
 
@@ -197,6 +197,11 @@ function possibleAnswers(){
 	return 0;
 };
 
+function roomSelectionScreen(){
+	Session.set('currentPage', 'roomSelection');
+	Session.set('roomId', null);
+}
+
 //Templates
 
 Template.page.currentPage = function(){
@@ -338,15 +343,16 @@ Template.roomAsker.events({
 	},
 	'click #toggleHistory': function(event){
 		Session.set('showhistory', !Session.get('showhistory'));
-	},
-	'click .logo': function(event){
-		Session.set('currentPage', 'roomSelection');
 	}
 });
-
+Template.logo.events({
+	'click h1': function(event){
+		roomSelectionScreen();
+	}
+});
 Template.backLink.events({
 	'click .backLink': function(event){
-		Session.set('currentPage', 'roomSelection');
+		roomSelectionScreen();
 	}
 });
 
