@@ -1,0 +1,27 @@
+{
+  "options": {
+    "meteorite": true,
+    "insecure": false,
+    "meteorRelease": "only-required-for-non-meteorite-projects"
+  },
+  "environments": {
+    "staging": {
+      "hostname": "isi-oracle.unil.ch",
+      "port": 22,
+      "username": "meteor",
+      "password": "BruceWillis",
+      "deploymentDirectory": "colorvote",
+      "gitBranch": "master",
+      "taskName": "colorvote"
+    },
+    "production": {
+      "hostname": "isi-oracle.unil-ch",
+      "port": 22,
+      "username": "meteor",
+      "password": "BruceWillis",
+      "deploymentDirectory": "colorvote",
+      "gitBranch": "master",
+      "taskName": "colorvote"
+    }
+  }
+}

@@ -292,7 +292,7 @@ Template.swipeVote.rendered = function(){
 		
 		for(var i=0; i< choices.length+2;i++){
 			var slide = Template.swipeVote.swiper.getSlide(i);
-			if(choices.length>0){
+			if(slide && choices.length>0){
 				//fix loop
 				var j=i;
 				if(j === choices.length+1){
