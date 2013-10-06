@@ -7,9 +7,7 @@ Accounts.registerLoginHandler(function(options) {
 });
 
 Meteor.publish('userPresence', function() {
-  // ProTip: unless you need it, don't send lastSeen down as it'll make your 
-  // templates constantly re-render (and use bandwidth)
-  return Meteor.presences.find({}, {fields: {state: true, userId: true}});
+  return Meteor.users.find({ "profile.online": true, 'type': {$ne:'admin'} }, {fields: {'profile.online': true, 'profile.room': true}});
 });
 
 Meteor.publish("question", function (id) {
