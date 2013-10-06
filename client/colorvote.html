@@ -91,6 +91,14 @@
 <template name="roomVoter">
 {{>swipeVote}}
 {{> roomName}}
+<div class="show-card-vote"></div>
+{{#if session 'showCardVote'}}
+<div class="card-vote">
+{{#each choices}}
+	{{> choice}}
+{{/each}}
+</div>
+{{/if}}
 {{#if votenow}}
 <div class="votenow">Votez maintenant</div>
 {{/if}}
@@ -122,7 +130,7 @@
 </template>
 
 <template name="choice">
-	<div class="choice color-{{no}} {{#if currentVoteIs no}}active{{/if}}">{{no}}</div>
+	<div class="card-wrapper"><div class="card color-{{no}} {{#if currentVoteIs no}}active{{/if}}"><div class="title">{{no}}</div></div></div>
 </template>
 
 <template name="roomAsker">

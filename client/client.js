@@ -13,6 +13,7 @@ Meteor.Presence.state = function() {
 Session.setDefault('showhistory', false);
 Session.setDefault('currentPage', 'roomSelection');
 Session.setDefault('showqrcode', false);
+Session.setDefault('showCardVote', false);
 
 if(Meteor.userId() === null){
 	loginAnonymously();
@@ -202,6 +203,14 @@ function roomSelectionScreen(){
 	Session.set('roomId', null);
 }
 
+function generateChoices(){
+	var choices = [];
+	for(var i=0; i< possibleAnswers(); i++){
+		choices.push({no:i});
+	}
+	return choices;
+}
+
 //Templates
 
 Template.page.currentPage = function(){
@@ -257,17 +266,31 @@ Template.roomName.votes = votesCount;
 Template.roomName.presenceCount = function(){
 	return Meteor.presences.find({state: Session.get('roomId')}).count();
 };
-Template.swipeVote.choices = function(){
-	var choices = [];
-	for(var i=0; i< possibleAnswers(); i++){
-		choices.push({no:i});
+Template.roomVoter.choices = generateChoices;
+
+Template.roomVoter.events({
+	'click .card-vote': function(event){
+		event.stopImmediatePropagation();
+		Session.set('showCardVote', false);
+	},
+	'click .show-card-vote': function(event){
+		event.stopImmediatePropagation();
+		Session.set('showCardVote', !Session.get('showCardVote'));
 	}
-	return choices;
-};
+});
+
+Template.choice.events({
+	'click .card': function(event){
+		event.stopImmediatePropagation();
+		Session.set('vote', this.no);
+		Meteor.call('vote', Session.get('currentQuestionId'), this.no);	
+	}
+});
+
 
 Template.swipeVote.rendered = function(){
 	console.log('swiper rendered');
-	var choices = Template.swipeVote.choices();
+	var choices = generateChoices();
 	if(choices.length > 0){
 		if(!Template.swipeVote.swiper){
 			console.log('swiper init');
