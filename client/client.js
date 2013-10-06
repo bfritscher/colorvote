@@ -141,7 +141,7 @@ function calculateTimer(question){
 
 function loginAnonymously(){
 	Accounts.callLoginMethod({methodArguments:[{anonymous: true}],
-		validateResult:function(e){console.log(e);}
+		validateResult:function(e){}
 	});
 }
 
@@ -275,7 +275,13 @@ Template.roomVoter.events({
 	},
 	'click .show-card-vote': function(event){
 		event.stopImmediatePropagation();
-		Session.set('showCardVote', !Session.get('showCardVote'));
+		var state = Session.get('showCardVote');
+		if(!state){
+			ga('send', 'pageview', '/' + location.hash.slice(1) + '/cards');
+		}else{
+			ga('send', 'pageview', '/' + location.hash.slice(1));
+		}
+		Session.set('showCardVote', !state);
 	}
 });
 
@@ -289,11 +295,9 @@ Template.choice.events({
 
 
 Template.swipeVote.rendered = function(){
-	console.log('swiper rendered');
 	var choices = generateChoices();
 	if(choices.length > 0){
 		if(!Template.swipeVote.swiper){
-			console.log('swiper init');
 			Template.swipeVote.swiper = new Swiper('.swiper-container.voter',{
 				pagination: '.pagination',
 				paginationClickable: true,
@@ -346,7 +350,6 @@ Template.swipeVote.rendered = function(){
 };
 Template.swipeVote.destroyed = function () {
 	if(Template.swipeVote.swiper){
-	console.log('Destroy');
 		Template.swipeVote.swiper.destroy();
 		delete Template.swipeVote.swiper;
 	}
@@ -357,7 +360,6 @@ Template.choice.currentVoteIs = function(choice){
 };
 Template.choice.events({
 	'click .choice': function(){
-		//move to DATA
 		Session.set('vote', this.no);
 		Meteor.call('vote', Session.get('currentQuestionId'), this.no);
 	}

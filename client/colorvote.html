@@ -23,6 +23,13 @@
 <script src="http://www.bugsense.com/static/js/global/bugsense.js" type='text/javascript'></script>
 <script type="text/javascript">
 	var bugsense = new Bugsense( { apiKey: 'b3ee2450' } );
+	Meteor._debug = function (/* arguments */) {
+	  var e = new Error();
+	  e.name = "MeteorError";
+	  e.message = Array.prototype.join.call(arguments, " ");
+	  e.stack = e.message;
+	  bugsense.notify(e, {'serverId': __meteor_runtime_config__.serverId});
+	};
 </script>
 </head>
 
