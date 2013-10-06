@@ -2,15 +2,9 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
-      "presence": {},
       "moment": {}
     },
     "packages": {
-      "presence": {
-        "git": "https://github.com/tmeasday/meteor-presence.git",
-        "tag": "v0.2.4",
-        "commit": "e59a12739685972c970f70956c4d3e78c31818ec"
-      },
       "moment": {
         "git": "https://github.com/acreeger/meteor-moment.git",
         "tag": "v2.2.1",

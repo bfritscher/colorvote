@@ -4,12 +4,14 @@ Handlebars.registerHelper('session',function(input){
 });
 
 //Defaults
+/*
 Meteor.Presence.state = function() {
 	if(Meteor.user() && Meteor.user().type === 'admin'){
 		return 'admin';
 	}
 	return  Session.get('roomId') || 'online';
 }
+*/
 Session.setDefault('showhistory', false);
 Session.setDefault('currentPage', 'roomSelection');
 Session.setDefault('showqrcode', false);
@@ -36,7 +38,7 @@ window.onhashchange = function(){
 Meteor.startup(function () {
 	FastClick.attach(document.body);
 	//subscriptions
-	Meteor.subscribe("userPresence");
+	//Meteor.subscribe("userPresence");
 	Meteor.subscribe("userData"); //get user.type field
 	Meteor.subscribe("rooms", function(){
 		ga('send', 'pageview', '/' + location.hash.slice(1));
@@ -223,7 +225,7 @@ Template.page.currentPageIs = function(page){
 
 Template.roomSelection.rooms = function(){
 	return _.map(Rooms.find({},{sort:{name:1}}).fetch(), function(room){
-		room.userCount = Meteor.presences.find({state: room._id}).count();
+		room.userCount = 0;//Meteor.presences.find({state: room._id}).count();
 		return room;
 	});
 }
@@ -264,7 +266,7 @@ Template.roomName.room = function(){
 Template.roomName.votes = votesCount;
 
 Template.roomName.presenceCount = function(){
-	return Meteor.presences.find({state: Session.get('roomId')}).count();
+	return 0;//Meteor.presences.find({state: Session.get('roomId')}).count();
 };
 Template.roomVoter.choices = generateChoices;
 
