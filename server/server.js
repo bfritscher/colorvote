@@ -22,8 +22,14 @@ Meteor.publish("question", function (id) {
 		fields.votes = true;
 	}
 	*/
-	return Questions.find(id);
+	return [Questions.find(id), QuestionResults.find(id)];
 });
+
+Meteor.publish("vote", function (questionId) {
+	check(questionId, String);
+	return Votes.find({questionId: questionId, userId: this.userId});
+});
+
 Meteor.publish("rooms", function () {
 	return Rooms.find({});
 });
@@ -34,5 +40,6 @@ Meteor.publish("userData", function () {
 
 Meteor.publish("questionsHistory", function (roomId) {
 	check(roomId, String);
-	return Questions.find({roomId: roomId, state:'stopped', $where:"this.votes.length > 0"}, {sort:{dateStopped: -1}, limit:20});
+	return [Questions.find({roomId: roomId, state:'stopped'}, {sort:{dateStopped: -1}, limit:20}),
+			QuestionResults.find({_id:{$in: _.pluck(Questions.find({roomId: roomId, state:'stopped'}, {sort:{dateStopped: -1}, limit:20, fields:{'_id':true}}).fetch(), '_id')}})];
 });

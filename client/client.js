@@ -67,18 +67,14 @@ Meteor.startup(function () {
 
 	Deps.autorun(function () {
 		if(Session.get("currentQuestionId")){
-			Meteor.subscribe("question", Session.get("currentQuestionId"), { onError: function(err){console.log(err)},onReady:function(){
+			Meteor.subscribe("question", Session.get("currentQuestionId"), { onError: function(err){console.log(err)}}); 
+			Meteor.subscribe("vote", Session.get("currentQuestionId"), { onError: function(err){console.log(err)},onReady:function(){
 				//update vote if already voted
-				question = Questions.findOne(Session.get("currentQuestionId"));
-				if(question){
-					var vote = _.find(question.votes, function(vote){
-						return Meteor.userId() === vote.user;
-					});
-					if(vote){
-						Session.set('vote', vote.vote);
-					}else{
-						Session.set('vote', null);
-					}
+				var vote = Votes.findOne({questionId: Session.get("currentQuestionId"), userId: Meteor.userId()});
+				if(vote){
+					Session.set('vote', vote.vote);
+				}else{
+					Session.set('vote', null);
 				}
 			}}); 
 		}
@@ -151,33 +147,17 @@ function getCurrentRoomName(){
 }
 
 function isStopped(){
-	question = Questions.findOne(Session.get("currentQuestionId"));
+	var question = Questions.findOne(Session.get("currentQuestionId"));
 	if(question){
 		return question.state === 'stopped';
 	}
+	return true;
 };
 
-function createEmptyResult(possibleAnswers){
-	var result = {};
-	for(var i=0; i< possibleAnswers; i++){
-		result[i] = 0;
-	}
-	return result;
-}
-
-function createQuestionResult(question){
-	return _.reduce(question.votes, function(memo, voteObj){
-            if(memo.hasOwnProperty(voteObj.vote)){
-                memo[voteObj.vote]++;
-            }
-            return memo
-		}, createEmptyResult(question.possibleAnswers));
-}
-
 function votesCount(){
-	var question = Questions.findOne(Session.get('currentQuestionId'));
+	var question = QuestionResults.findOne(Session.get('currentQuestionId'));
 	if(question){
-		return question.votes.length;
+		return question.votes;
 	}
 	return 0;
 }
@@ -208,6 +188,10 @@ function generateChoices(){
 }
 
 //Templates
+Template.debug.time = function(){
+	return new Date();
+}
+
 
 Template.page.currentPage = function(){
 	return Session.get('currentPage');
@@ -218,10 +202,7 @@ Template.page.currentPageIs = function(page){
 }
 
 Template.roomSelection.rooms = function(){
-	return _.map(Rooms.find({},{sort:{name:1}}).fetch(), function(room){
-		room.userCount = Meteor.users.find({ "profile.online": true, 'type': {$ne:'admin'}, 'profile.room': room._id }).count();
-		return room;
-	});
+	return Rooms.find({},{sort:{name:1}});
 }
 
 Template.roomSelection.isAdmin = isAdmin;
@@ -254,6 +235,10 @@ Template.roomSelectionItem.events({
 	}
 });
 
+Template.roomCount.count = function(){
+	return Meteor.users.find({ "profile.online": true, 'type': {$ne:'admin'}, 'profile.room': this._id}).count();
+};
+
 Template.roomName.room = function(){
 	return getCurrentRoomName();
 }
@@ -263,6 +248,10 @@ Template.roomName.presenceCount = function(){
 	return Meteor.users.find({ "profile.online": true, 'type': {$ne:'admin'}, 'profile.room': Session.get('roomId') }).count();
 };
 Template.roomVoter.choices = generateChoices;
+Template.roomVoter.stopped = isStopped;
+Template.roomVoter.votenow = function(){
+	return !isStopped() && (Session.get('vote') === '' || Session.get('vote') === null);
+}
 
 Template.roomVoter.events({
 	'click .card-vote': function(event){
@@ -281,17 +270,14 @@ Template.roomVoter.events({
 	}
 });
 
-Template.choice.events({
-	'click .card': function(event){
-		event.stopImmediatePropagation();
-		Session.set('vote', this.no);
-		Meteor.call('vote', Session.get('currentQuestionId'), this.no);	
-	}
-});
-
-
 Template.swipeVote.rendered = function(){
+	var self = this;
+
+	if (! self.handle) {
+		self.handle = Deps.autorun(function () {	
+		
 	var choices = generateChoices();
+	
 	if(choices.length > 0){
 		if(!Template.swipeVote.swiper){
 			Template.swipeVote.swiper = new Swiper('.swiper-container.voter',{
@@ -343,8 +329,12 @@ Template.swipeVote.rendered = function(){
 			Template.swipeVote.swiper.swipeTo(Session.get('vote'), 0);
 		}
 	}
+	
+	});
+	}
 };
 Template.swipeVote.destroyed = function () {
+	this.handle && this.handle.stop();
 	if(Template.swipeVote.swiper){
 		Template.swipeVote.swiper.destroy();
 		delete Template.swipeVote.swiper;
@@ -354,10 +344,12 @@ Template.swipeVote.destroyed = function () {
 Template.choice.currentVoteIs = function(choice){
 	return Session.get('vote') === choice;
 };
+
 Template.choice.events({
-	'click .choice': function(){
+	'click .card': function(event){
+		event.stopImmediatePropagation();
 		Session.set('vote', this.no);
-		Meteor.call('vote', Session.get('currentQuestionId'), this.no);
+		Meteor.call('vote', Session.get('currentQuestionId'), this.no);	
 	}
 });
 
@@ -369,9 +361,9 @@ Template.roomAsker.href = function() {return {href:location.href};};
 Template.roomAsker.possibleAnswers = possibleAnswers;
 
 Template.roomAsker.data = function(){
-	var question = Questions.findOne(Session.get('currentQuestionId'));
+	var question = QuestionResults.findOne(Session.get('currentQuestionId'));
 	if(question){
-		return createQuestionResult(question);
+		return question.results;
 	}
 };
 
@@ -389,7 +381,7 @@ Template.roomAsker.events({
 		}else{
 			Session.set('showresults', false);
 		}
-		Meteor.call('questionAction', Session.get('currentQuestionId'),function (error, result) { console.log(error);} );
+		Meteor.call('questionAction', Session.get('currentQuestionId'));
 		
 	},
 	'click #toggleResults': function(event){
@@ -416,25 +408,27 @@ Template.backLink.events({
 	}
 });
 
-
 Template.questionAction.stopped = isStopped;
-Template.roomVoter.stopped = isStopped;
-Template.roomVoter.votenow = function(){
-	return !isStopped() && (Session.get('vote') === '' || Session.get('vote') === null);
-}
 
 Template.history.questionsHistory = function(){
-	return _.map(Questions.find({roomId: Session.get("roomId"), state:'stopped',$where:"this.votes.length > 0"},
-		{sort:{dateStopped: -1}, limit:20}).fetch(), function(q){
-		q.result = createQuestionResult(q);
+	return _.map(Questions.find({roomId: Session.get('roomId'), state:'stopped'}, {sort:{dateStopped: -1}, limit:20}).fetch(), function(q){
 		q.date = moment(q.dateStopped).format('DD.MM.YYYY HH:mm');
 		q.time = calculateTimer(q);
+		var qr = QuestionResults.findOne(q._id);
+		if(qr){
+			q.results = qr.results;
+			q.votes = qr.votes;
+		}else{
+			q.results = createQuestionResult(q.votes, q.possibleAnswers);
+			q.votes = _.isArray(q.votes) ? q.votes.length : q.votes || 0;
+		}
 		return q;
 	});
 }
 
 Template.history.rendered = function(){
-	if(this.find('.history .swiper-container')){
+	//TODO: is rendered too many times
+	if(this.find('.history .swiper-container') && Template.history.questionsHistory().length > 0){
 		if(Template.history.swiper){
 			Template.history.swiper.destroy();
 		}

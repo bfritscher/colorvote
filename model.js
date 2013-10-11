@@ -12,6 +12,7 @@ function isAdmin(userId){
 	return user && user.type === 'admin';
 }
 
+//Security needed, currently an admin can do what he wants!
 Rooms.allow({
 	insert: function (userId, room) {
 		return isAdmin(userId);
@@ -36,13 +37,58 @@ Questions.allow({
 		return isAdmin(userId);
 	}
 });
+QuestionResults = new Meteor.Collection("questionresults");
+QuestionResults.allow({
+	insert: function (userId, room) {
+		return isAdmin(userId);
+	},
+	update: function (userId, room, fields, modifier) {
+		return isAdmin(userId);
+	},
+	remove: function (userId, room) {
+		return isAdmin(userId);
+	}
+});
+
+
+Votes = new Meteor.Collection('votes');
+Votes.allow({
+	insert: function (userId, room) {
+		return isAdmin(userId);
+	},
+	update: function (userId, room, fields, modifier) {
+		return isAdmin(userId);
+	},
+	remove: function (userId, room) {
+		return isAdmin(userId);
+	}
+});
 
 function createQuestionInRoom(roomId, possibleAnswers){
 	var newQuestionId = Questions.insert({possibleAnswers: possibleAnswers || Config.numMaxAnswers,
-		state:'started', votes:[], dateStarted: new Date(), roomId: roomId});
+		state:'started', dateStarted: new Date(), roomId: roomId});
+	
+	QuestionResults.insert({_id: newQuestionId, votes: 0, results:{}});
 	//set as currentQuestion for same room
 	Rooms.update(roomId, {$set:{currentQuestion: newQuestionId}});
 };
+//global functions to use also in client
+createEmptyResult = function createEmptyResult(possibleAnswers){
+	var result = {};
+	for(var i=0; i< possibleAnswers; i++){
+		result[i] = 0;
+	}
+	return result;
+}
+
+createQuestionResult = function createQuestionResult(votes, possibleAnswers){
+	return _.reduce(votes, function(memo, voteObj){
+            if(memo.hasOwnProperty(voteObj.vote)){
+                memo[voteObj.vote]++;
+            }
+            return memo
+		}, createEmptyResult(possibleAnswers));
+}
 
 Meteor.methods({
 	changeNumAnswers: function(questionId, numAnswers){
@@ -54,8 +100,9 @@ Meteor.methods({
 		if(numAnswers > Config.numMaxAnswers){
 			throw new Meteor.Error(403, "numAnswers must be less or equal to " + Config.numMaxAnswers);
 		}
-		
-		Questions.update(questionId, {$set: {possibleAnswers: numAnswers}})
+		Questions.update(questionId, {$set: {possibleAnswers: numAnswers}});
+		QuestionResults.update(questionId, {$set: {
+			results:createQuestionResult(Votes.find({questionId: questionId}).fetch(), numAnswers)}})
 	},
 	makeAdmin: function(userId){
 		check(userId, String);
@@ -65,39 +112,32 @@ Meteor.methods({
 		Meteor.users.update(userId, {$set:{type:'admin'}})
 	},
 		
-  vote: function (questionId, vote) {
+  vote: function (questionId, voteNb) {
 	check(questionId, String);
-	check(vote, Number);
+	check(voteNb, Number);
 	var question = Questions.findOne(questionId);
-	if (! question){
+	var questionResult = QuestionResults.findOne(questionId);
+	if (! question && ! questionResult){
 		throw new Meteor.Error(404, "No such question");
 	}
 	if(question.state === 'stopped'){
 		throw new Meteor.Error(403, "Question stopped");
 	}
 		
-	var voteIndex = _.indexOf(_.pluck(question.votes, 'user'), this.userId);
-	if (voteIndex !== -1) {
+	var vote = Votes.findOne({questionId: questionId, userId: this.userId});
+	if (vote) {
 	  // update existing vote entry
-
-	  if (Meteor.isServer) {
-		// update the appropriate vote entry with $
-		Questions.update(
-		  {_id: questionId, "votes.user": this.userId},
-		  {$set: {"votes.$.vote": vote}});
-	  } else {
-		// minimongo doesn't yet support $ in modifier. as a temporary
-		// workaround, make a modifier that uses an index. this is
-		// safe on the client since there's only one thread.
-		var modifier = {$set: {}};
-		modifier.$set["votes." + voteIndex + ".vote"] = vote;
-		Questions.update(questionId, modifier);
-	  }
+	  Votes.update({_id: vote._id}, {$set:{vote:voteNb}});
 	} else {
 	  // add new entry
-	  Questions.update(questionId,
-					 {$push: {votes: {user: this.userId, vote: vote}}});
+	  Votes.insert({questionId: questionId, userId: this.userId, vote: voteNb});
 	}
+	//update result recalculate all;
+	//TODO PERFORMANCE: maybe just update by vote
+	QuestionResults.update({_id: questionId},
+		{$set:{votes:Votes.find({questionId: questionId}).count(),
+			   results:createQuestionResult(Votes.find({questionId: questionId}).fetch(), question.possibleAnswers)
+			   }});
   },
   
   questionAction: function(questionId){
@@ -116,7 +156,6 @@ Meteor.methods({
 	 
 	if(question.state==='started'){
 		Questions.update(questionId, {$set: {state: 'stopped', dateStopped: new Date()}});
-		//TODO: could compute end results
 	}else if(question.state==='stopped'){
 		createQuestionInRoom( question.roomId, question.possibleAnswers);
 	}
