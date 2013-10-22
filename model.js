@@ -125,24 +125,28 @@ Meteor.methods({
 	}
 		
 	var vote = Votes.findOne({questionId: questionId, userId: this.userId});
-	var votesCount = questionResult.votes;
-	var results = questionResult.results;
+	
+	var changes = {votes: questionResult.votes};
+	if(questionResult.results){
+		changes['results'] = questionResult.results;
+	}
+	
 	if (vote) {
 	  // update existing vote entry
-	  results[vote.vote]--;
+	  if(changes.results){
+		changes.results[vote.vote]--;
+	  }
 	  Votes.update({_id: vote._id}, {$set:{vote:voteNb}});
-	  results[voteNb]++;
 	} else {
 	  // add new entry
 	  Votes.insert({questionId: questionId, userId: this.userId, vote: voteNb});
-	  votesCount++;
-	  results[voteNb]++;
+	  changes.votes++;
+	}
+	if(changes.results){
+		changes.results[voteNb]++;
 	}
 	//update result without recalculating all
-	QuestionResults.update({_id: questionId},
-		{$set:{votes: votesCount,
-			   results: results
-			   }});
+	QuestionResults.update({_id: questionId},{$set:changes});
   },
   
   questionAction: function(questionId){
