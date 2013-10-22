@@ -12,17 +12,13 @@ Meteor.publish('userPresence', function() {
 
 Meteor.publish("question", function (id) {
 	check(id, String);	
-	/*
-	TODO: precalculate count and send votes array only to admin but need to include
-	user's own vote to show it to him...
-	var fields = {votesCount: true, possibleAnswers:true,
-		dateStarted:true, dateStopped:true, roomId:true, state: true};
-	var user = Meteor.users.findOne(this.user);
+	//only show results to admin
+	var fields = {votes: true };
+	var user = Meteor.users.findOne(this.userId);
 	if(user && user.type==='admin'){
-		fields.votes = true;
+		fields.results = true;
 	}
-	*/
-	return [Questions.find(id), QuestionResults.find(id)];
+	return [Questions.find(id), QuestionResults.find({_id: id}, {fields: fields})];
 });
 
 Meteor.publish("vote", function (questionId) {
