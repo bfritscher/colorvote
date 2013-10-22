@@ -68,7 +68,7 @@ function createQuestionInRoom(roomId, possibleAnswers){
 	var newQuestionId = Questions.insert({possibleAnswers: possibleAnswers || Config.numMaxAnswers,
 		state:'started', dateStarted: new Date(), roomId: roomId});
 	
-	QuestionResults.insert({_id: newQuestionId, votes: 0, results:{}});
+	QuestionResults.insert({_id: newQuestionId, votes: 0, results: createEmptyResult(Config.numMaxAnswers)});
 	//set as currentQuestion for same room
 	Rooms.update(roomId, {$set:{currentQuestion: newQuestionId}});
 };
@@ -125,18 +125,23 @@ Meteor.methods({
 	}
 		
 	var vote = Votes.findOne({questionId: questionId, userId: this.userId});
+	var votesCount = questionResult.votes;
+	var results = questionResult.results;
 	if (vote) {
 	  // update existing vote entry
+	  results[vote.vote]--;
 	  Votes.update({_id: vote._id}, {$set:{vote:voteNb}});
+	  results[voteNb]++;
 	} else {
 	  // add new entry
 	  Votes.insert({questionId: questionId, userId: this.userId, vote: voteNb});
+	  votesCount++;
+	  results[voteNb]++;
 	}
-	//update result recalculate all;
-	//TODO PERFORMANCE: maybe just update by vote
+	//update result without recalculating all
 	QuestionResults.update({_id: questionId},
-		{$set:{votes:Votes.find({questionId: questionId}).count(),
-			   results:createQuestionResult(Votes.find({questionId: questionId}).fetch(), question.possibleAnswers)
+		{$set:{votes: votesCount,
+			   results: results
 			   }});
   },
   
@@ -156,6 +161,11 @@ Meteor.methods({
 	 
 	if(question.state==='started'){
 		Questions.update(questionId, {$set: {state: 'stopped', dateStopped: new Date()}});
+		//calculate real votes
+		QuestionResults.update({_id: questionId},
+			{$set:{votes:Votes.find({questionId: questionId}).count(),
+			   results:createQuestionResult(Votes.find({questionId: questionId}).fetch(), question.possibleAnswers)
+			   }});
 	}else if(question.state==='stopped'){
 		createQuestionInRoom( question.roomId, question.possibleAnswers);
 	}
