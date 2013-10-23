@@ -68,7 +68,7 @@ function createQuestionInRoom(roomId, possibleAnswers){
 	var newQuestionId = Questions.insert({possibleAnswers: possibleAnswers || Config.numMaxAnswers,
 		state:'started', dateStarted: new Date(), roomId: roomId});
 	
-	QuestionResults.insert({_id: newQuestionId, votes: 0, results: createEmptyResult(Config.numMaxAnswers)});
+	QuestionResults.insert({_id: newQuestionId, votes: 0, results: createEmptyResult(Config.numMaxAnswers), modified: new Date()});
 	//set as currentQuestion for same room
 	Rooms.update(roomId, {$set:{currentQuestion: newQuestionId}});
 };
@@ -125,28 +125,21 @@ Meteor.methods({
 	}
 		
 	var vote = Votes.findOne({questionId: questionId, userId: this.userId});
-	
-	var changes = {votes: questionResult.votes};
-	if(questionResult.results){
-		changes['results'] = questionResult.results;
-	}
-	
+		
 	if (vote) {
 	  // update existing vote entry
-	  if(changes.results){
-		changes.results[vote.vote]--;
-	  }
 	  Votes.update({_id: vote._id}, {$set:{vote:voteNb}});
 	} else {
 	  // add new entry
 	  Votes.insert({questionId: questionId, userId: this.userId, vote: voteNb});
-	  changes.votes++;
 	}
-	if(changes.results){
-		changes.results[voteNb]++;
+	if(questionResult.modified && new Date().getTime() - questionResult.modified.getTime() > 3000){ //update every x seconds
+		QuestionResults.update({_id: questionId},
+		{$set:{votes:Votes.find({questionId: questionId}).count(),
+		   results:createQuestionResult(Votes.find({questionId: questionId}).fetch(), question.possibleAnswers),
+		   modified: new Date()
+		   }});
 	}
-	//update result without recalculating all
-	QuestionResults.update({_id: questionId},{$set:changes});
   },
   
   questionAction: function(questionId){
@@ -168,7 +161,8 @@ Meteor.methods({
 		//calculate real votes
 		QuestionResults.update({_id: questionId},
 			{$set:{votes:Votes.find({questionId: questionId}).count(),
-			   results:createQuestionResult(Votes.find({questionId: questionId}).fetch(), question.possibleAnswers)
+			   results:createQuestionResult(Votes.find({questionId: questionId}).fetch(), question.possibleAnswers),
+			   modified: new Date()
 			   }});
 	}else if(question.state==='stopped'){
 		createQuestionInRoom( question.roomId, question.possibleAnswers);
