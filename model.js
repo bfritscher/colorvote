@@ -133,7 +133,7 @@ Meteor.methods({
 	  // add new entry
 	  Votes.insert({questionId: questionId, userId: this.userId, vote: voteNb});
 	}
-	if(questionResult.modified && new Date().getTime() - questionResult.modified.getTime() > 3000){ //update every x seconds
+	if(questionResult.modified && new Date().getTime() - questionResult.modified.getTime() > 1500){ //update every x seconds
 		QuestionResults.update({_id: questionId},
 		{$set:{votes:Votes.find({questionId: questionId}).count(),
 		   results:createQuestionResult(Votes.find({questionId: questionId}).fetch(), question.possibleAnswers),
