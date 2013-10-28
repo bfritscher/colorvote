@@ -1,6 +1,5 @@
 {
   "packages": {
-    "moment": {},
-    "user-status": {}
+    "moment": {}
   }
 }

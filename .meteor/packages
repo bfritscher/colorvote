@@ -13,5 +13,5 @@ accounts-password
 accounts-ui
 d3
 moment
-user-status
+#user-status
 accounts-ui-unstyled

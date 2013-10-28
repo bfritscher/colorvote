@@ -30,7 +30,7 @@ window.onhashchange = function(){
 Meteor.startup(function () {
 	FastClick.attach(document.body);
 	//subscriptions
-	Meteor.subscribe("userPresence");
+	//Meteor.subscribe("userPresence");
 	Meteor.subscribe("userData"); //get user.type field
 	Meteor.subscribe("rooms", function(){
 		ga('send', 'pageview', '/' + location.hash.slice(1));
@@ -236,7 +236,7 @@ Template.roomSelectionItem.events({
 });
 
 Template.roomCount.count = function(){
-	return Meteor.users.find({ "profile.online": true, 'type': {$ne:'admin'}, 'profile.room': this._id}).count();
+	return '';//Meteor.users.find({ "profile.online": true, 'type': {$ne:'admin'}, 'profile.room': this._id}).count();
 };
 
 Template.roomName.room = function(){
@@ -245,7 +245,7 @@ Template.roomName.room = function(){
 Template.roomName.votes = votesCount;
 
 Template.roomName.presenceCount = function(){
-	return Meteor.users.find({ "profile.online": true, 'type': {$ne:'admin'}, 'profile.room': Session.get('roomId') }).count();
+	return '';Meteor.users.find({ "profile.online": true, 'type': {$ne:'admin'}, 'profile.room': Session.get('roomId') }).count();
 };
 Template.roomVoter.choices = generateChoices;
 Template.roomVoter.stopped = isStopped;

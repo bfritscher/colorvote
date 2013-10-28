@@ -5,10 +5,11 @@ Accounts.registerLoginHandler(function(options) {
 	// Create and insert a user, bypassing everything. All we want is the token.
 	return Accounts.insertUserDoc({generateLoginToken:true}, {type: 'anonymous', services: {}});
 });
-
+/*
 Meteor.publish('userPresence', function() {
   return Meteor.users.find({ "profile.online": true, 'type': {$ne:'admin'} }, {fields: {'profile.online': true, 'profile.room': true}});
 });
+*/
 
 Meteor.publish("question", function (id) {
 	check(id, String);	
