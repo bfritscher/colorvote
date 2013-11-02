@@ -1,9 +1,8 @@
-<div class="hero-unit">
-  <h1>'Allo, 'Allo!</h1>
-  <p>You now have</p>
-  <ul>
-      <li ng-repeat="thing in awesomeThings">{{thing}}</li>
-  </ul>
-  <p>installed.</p>
-  <h3>Enjoy coding! - Yeoman</h3>
+<div ng-include="'views/logo.html'"></div>
+<div class="rooms">
+	<div class="room" ng-repeat="room in rooms" ng-click="go(room.name)">{{room.name}} <span>(count)</span>
+		<span class="rename-room" ng-if="isAdmin()"
+			ng-click="renameRoom(room);$event.stopImmediatePropagation();">renommer</span>
+	</div>
+	<div class="room add-room" ng-if="isAdmin()" ng-click="addRoom()">+ Add room</div>
 </div>

@@ -28,7 +28,7 @@ window.onhashchange = function(){
 };
 
 Meteor.startup(function () {
-	FastClick.attach(document.body);
+	
 	//subscriptions
 	//Meteor.subscribe("userPresence");
 	Meteor.subscribe("userData"); //get user.type field
@@ -137,86 +137,10 @@ function loginAnonymously(){
 	});
 }
 
-function getCurrentRoomName(){
-	var room = Rooms.findOne(Session.get('roomId'));
-	if(room){
-		return room.name;
-	}else{
-		return '';
-	}
-}
 
-function isStopped(){
-	var question = Questions.findOne(Session.get("currentQuestionId"));
-	if(question){
-		return question.state === 'stopped';
-	}
-	return true;
-};
-
-function votesCount(){
-	var question = QuestionResults.findOne(Session.get('currentQuestionId'));
-	if(question){
-		return question.votes;
-	}
-	return 0;
-}
-
-function isAdmin(){
-	return Meteor.user() && Meteor.user().type === 'admin';
-}
-
-function possibleAnswers(){
-	var question = Questions.findOne(Session.get('currentQuestionId'));
-	if(question){
-		return question.possibleAnswers;
-	}
-	return 0;
-};
-
-function roomSelectionScreen(){
-	Session.set('currentPage', 'roomSelection');
-	Session.set('roomId', null);
-}
-
-function generateChoices(){
-	var choices = [];
-	for(var i=0; i< possibleAnswers(); i++){
-		choices.push({no:i});
-	}
-	return choices;
-}
 
 //Templates
-Template.debug.time = function(){
-	return new Date();
-}
 
-
-Template.page.currentPage = function(){
-	return Session.get('currentPage');
-}
-
-Template.page.currentPageIs = function(page){
-	return Session.get('currentPage') === page;
-}
-
-Template.roomSelection.rooms = function(){
-	return Rooms.find({},{sort:{name:1}});
-}
-
-Template.roomSelection.isAdmin = isAdmin;
-Template.roomSelection.events({
-	'click .room.add-room': function(event){
-		event.stopImmediatePropagation();
-		var name = prompt('Room name?');
-		if(name){
-			Meteor.call('newRoom', name);
-		}
-	}
-});
-
-Template.roomSelectionItem.isAdmin = isAdmin;
 Template.roomSelectionItem.events({
 	'click .room': function(){
 		Session.set('roomId', this._id);
@@ -226,135 +150,9 @@ Template.roomSelectionItem.events({
 			Session.set('currentPage', 'roomVoter');
 		}
 	},
-	'click .room .rename-room': function(event){
-		event.stopImmediatePropagation();
-		var name = prompt('Room name?', this.name);
-		if(name && name.length > 0 && name != this.name){
-			Rooms.update(this._id, {$set:{name:name}});
-		}
-	}
 });
 
-Template.roomCount.count = function(){
-	return '';//Meteor.users.find({ "profile.online": true, 'type': {$ne:'admin'}, 'profile.room': this._id}).count();
-};
 
-Template.roomName.room = function(){
-	return getCurrentRoomName();
-}
-Template.roomName.votes = votesCount;
-
-Template.roomName.presenceCount = function(){
-	return '';Meteor.users.find({ "profile.online": true, 'type': {$ne:'admin'}, 'profile.room': Session.get('roomId') }).count();
-};
-Template.roomVoter.choices = generateChoices;
-Template.roomVoter.stopped = isStopped;
-Template.roomVoter.votenow = function(){
-	return !isStopped() && (Session.get('vote') === '' || Session.get('vote') === null);
-}
-
-Template.roomVoter.events({
-	'click .card-vote': function(event){
-		event.stopImmediatePropagation();
-		Session.set('showCardVote', false);
-	},
-	'click .show-card-vote': function(event){
-		event.stopImmediatePropagation();
-		var state = Session.get('showCardVote');
-		if(!state){
-			ga('send', 'pageview', '/' + location.hash.slice(1) + '/cards');
-		}else{
-			ga('send', 'pageview', '/' + location.hash.slice(1));
-		}
-		Session.set('showCardVote', !state);
-	}
-});
-
-Template.swipeVote.rendered = function(){
-	var self = this;
-
-	if (! self.handle) {
-		self.handle = Deps.autorun(function () {	
-		
-	var choices = generateChoices();
-	
-	if(choices.length > 0){
-		if(!Template.swipeVote.swiper){
-			Template.swipeVote.swiper = new Swiper('.swiper-container.voter',{
-				pagination: '.pagination',
-				paginationClickable: true,
-				createPagination: true,
-				loop: true,
-				watchActiveIndex: true,
-				queueEndCallbacks: true,
-				onSlideChangeEnd: function(swiper){
-					Session.set('vote', swiper.activeLoopIndex);
-					Meteor.call('vote', Session.get('currentQuestionId'), swiper.activeLoopIndex);
-				}
-			});
-		}
-		
-		var toCreate = choices.length+2 - Template.swipeVote.swiper.slides.length;
-		for(var i=0; i< toCreate;i++){
-			Template.swipeVote.swiper.createSlide('<div class="title"></div>').append();
-		}
-		
-		for(var i=0; i< choices.length+2;i++){
-			var slide = Template.swipeVote.swiper.getSlide(i);
-			if(slide && choices.length>0){
-				//fix loop
-				var j=i;
-				if(j === choices.length+1){
-					j=0;
-				}else if(j===0){
-					j=choices.length-1;
-				}else{
-					j=i-1;
-				}
-				slide.className = 'swiper-slide color-' + choices[j].no;
-				slide.querySelector('.title').textContent = choices[j].no;
-			}
-		};
-		while(choices.length+2 < Template.swipeVote.swiper.slides.length){
-			var slide = Template.swipeVote.swiper.getSlide(choices.length+2);
-			if(slide){
-				if(slide.isActive()){
-					Template.swipeVote.swiper.swipeTo(0, 0);
-				}
-				slide.remove();
-			}
-		}
-		
-		if(Template.swipeVote.swiper.activeLoopIndex != Session.get('vote') && Session.get('vote') < choices.length){
-			Template.swipeVote.swiper.swipeTo(Session.get('vote'), 0);
-		}
-	}
-	
-	});
-	}
-};
-Template.swipeVote.destroyed = function () {
-	this.handle && this.handle.stop();
-	if(Template.swipeVote.swiper){
-		Template.swipeVote.swiper.destroy();
-		delete Template.swipeVote.swiper;
-	}
-};
-
-Template.choice.currentVoteIs = function(choice){
-	return Session.get('vote') === choice;
-};
-
-Template.choice.events({
-	'click .card': function(event){
-		event.stopImmediatePropagation();
-		Session.set('vote', this.no);
-		Meteor.call('vote', Session.get('currentQuestionId'), this.no);	
-	}
-});
-
-Template.roomAsker.room = getCurrentRoomName;
-Template.roomAsker.stopped = isStopped;
 Template.roomAsker.hrefThumb = function() {return {width: 40, height: 40, href:location.href};};
 Template.roomAsker.href = function() {return {href:location.href};};
 
@@ -383,32 +181,8 @@ Template.roomAsker.events({
 		}
 		Meteor.call('questionAction', Session.get('currentQuestionId'));
 		
-	},
-	'click #toggleResults': function(event){
-		Session.set('showresults', !Session.get('showresults'));
-	},
-	'click #qrCodePanel': function(event){
-		Session.set('showqrcode', false);
-	},
-	'click #showqrcode': function(event){
-		Session.set('showqrcode', true);
-	},
-	'click #toggleHistory': function(event){
-		Session.set('showhistory', !Session.get('showhistory'));
 	}
 });
-Template.logo.events({
-	'click h1': function(event){
-		roomSelectionScreen();
-	}
-});
-Template.backLink.events({
-	'click .backLink': function(event){
-		roomSelectionScreen();
-	}
-});
-
-Template.questionAction.stopped = isStopped;
 
 Template.history.questionsHistory = function(){
 	return _.map(Questions.find({roomId: Session.get('roomId'), state:'stopped'}, {sort:{dateStopped: -1}, limit:20}).fetch(), function(q){
