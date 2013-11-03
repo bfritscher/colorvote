@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('colorvoteApp')
-  .controller('MainCtrl', ['$scope', '$window', '$location', function ($scope, $window, $location) {
-    $scope.rooms = [
-		{name: 'ANT1032'}, {name:'HEGArc'}, {name:'Test'}
-    ];
+  .controller('MainCtrl', ['$scope', '$window', '$location', 'model',
+  function ($scope, $window, $location, model) {
+    $scope.data = model.data;
+	model.data.question = {};
+	model.getRooms();
 	$scope.isAdmin = function(){
 		return true;
 	}
@@ -23,6 +24,11 @@ angular.module('colorvoteApp')
 		}
 	}
 	$scope.go = function ( path ) {
-	  $location.path( path );
+		$scope.$root.loading = true;
+		if($scope.isAdmin()){
+			path += '/admin';
+		}
+		$location.path( path );
 	};
+	$scope.$root.loading = false;
   }]);

@@ -441,7 +441,7 @@ body {
 	text-align:center;
 }
 
-#qrCodePanel{
+#qrCodePanel, #loading{
 	width: 100%;
 	height: 100%;
 	position: absolute;
@@ -451,7 +451,7 @@ body {
 	z-index: 1001;
 	text-align:center;
 }
-#qrCodePanel h1{
+#qrCodePanel h1, #loading h1{
 	margin-top: 60px;
 }
 #qrCodePanel .qrcode{
@@ -460,6 +460,19 @@ body {
 #qrCodePanel .qrcode img{
 	margin: auto;
 }
+
+#reconnecting{
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 600;
+	width: 100px;
+	color: red;
+	text-align: center;
+	padding: 1px;
+	background: rgba(255,255,255,0.5);
+}
+
 .card-vote{
 	position: absolute;
 	top:0;

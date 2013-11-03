@@ -48,12 +48,16 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div class="wrapper" ng-view=""></div>
-
+    <div id="loading" ng-show="loading"><h1>Loading...</h1></div>
+	<div class="wrapper" ng-view=""></div>
+	
+	
+	<script src="http://debian:3000/primus/primus.js"></script>
 	<!-- build:js scripts/modules.js -->
 	<script src="bower_components/angular/angular.js"></script>
 	<script src="bower_components/angular-route/angular-route.js"></script>
 	<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+	<script src="bower_components/angular-uuid4/angular-uuid4.js"></script>
 	<script src="bower_components/moment/min/moment.min.js"></script>
 	<script src="bower_components/d3/d3.min.js"></script>
 	<script src="scripts/lib/idangerous.swiper-2.2.js"></script>
@@ -67,6 +71,7 @@
 	<script src="scripts/controllers/asker.js"></script>
 	<script src="scripts/directives/qrcode.js"></script>
 	<script src="scripts/directives/chart.js"></script>
+	<script src="scripts/services/model.js"></script>
 	<!-- endbuild -->
 </body>
 </html>

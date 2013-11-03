@@ -1,41 +1,32 @@
 'use strict';
 
 angular.module('colorvoteApp')
-  .controller('VoterCtrl', ['$scope', '$location', function ($scope, $location) {
-    $scope.room = {
-		name: 'ANT1031'
-	};
-	$scope.question = {
-		possibleAnswers: 8,
-		state:'started',
-		dateStarted: new Date(),
-		roomId: 1,
-		votes: 34,
-		results: [0, 2, 6, 8, 2, 5, 4, 7],
-		modified: new Date()
-	};
+  .controller('VoterCtrl', ['$scope', '$location', 'model', '$window',
+	function ($scope, $location, model, $window) {
+	ga('send', 'pageview', $location.path());
 	
-	$scope.vote = {
-		vote: 3
-	};
+	$scope.data = model.data;
+	
 	$scope.choices = [0,1,2,3,4,5,6,7];
 	$scope.showCardVote = false;
 	$scope.toggleCardVote = function(){
-		var url = '/' + $scope.room.name
+		var url = $location.path();
 		if(!$scope.showCardVote){
 			 url += '/cards';
 		}
 		ga('send', 'pageview', url);
 		$scope.showCardVote = !$scope.showCardVote;
 	}
-	//TODO: vote service
 	$scope.setVote = function(vote){
-		$scope.vote.vote = vote;
+		$scope.data.question.vote = vote;
+		//TODO: maybe c:0
+		model.vote();
 	}
 	$scope.go = function ( path ) {
 	  $location.path( path );
 	};
-	//TODO: create directive
+	
+	//CLEANUP: create/move to a directive
 	var swiper = new Swiper('.swiper-container.voter',{
 		pagination: '.pagination',
 		paginationClickable: true,
@@ -50,8 +41,8 @@ angular.module('colorvoteApp')
 		}
 	});
 	
-	$scope.$watch( "[question.possibleAnswers, vote.vote, choices]", function(){
-		var possibleAnswers = $scope.question.possibleAnswers;
+	$scope.$watch( "[data.question.possibleAnswers, data.question.vote, choices]", function(){
+		var possibleAnswers = $scope.data.question.possibleAnswers;
 		var toCreate = possibleAnswers + 2 - swiper.slides.length;
 		for(var i=0; i< toCreate;i++){
 			swiper.createSlide('<div class="title"></div>').append();
@@ -83,9 +74,17 @@ angular.module('colorvoteApp')
 			}
 		}
 		
-		if(swiper.activeLoopIndex != $scope.vote.vote && $scope.vote.vote < possibleAnswers){
-			swiper.swipeTo($scope.vote.vote, 0);
+		if(swiper.activeLoopIndex != $scope.data.question.vote && $scope.data.question.vote < possibleAnswers){
+			swiper.swipeTo($scope.data.question.vote, 0);
 		}
 	}, true);
 	
+	$scope.$on('$destroy', function () { 
+		model.leave($scope.data.question.room);
+	});
+	$window.onbeforeunload = function(){
+		model.leave($scope.data.question.room);
+	}
+	
+	$scope.$root.loading = false;
   }]);
