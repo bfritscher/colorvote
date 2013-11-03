@@ -19,6 +19,12 @@
   "trailing": true,
   "smarttabs": true,
   "globals": {
-    "angular": false
+    "angular": false,
+    "d3": false,
+    "Primus": false,
+    "Swiper": false,
+    "QRCode": false,
+    "ga": false,
+    "moment": false
   }
 }

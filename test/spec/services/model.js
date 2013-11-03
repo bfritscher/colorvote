@@ -6,13 +6,9 @@ describe('Service: Model', function () {
   beforeEach(module('ColorvoteServerApp'));
 
   // instantiate service
-  var Model;
-  beforeEach(inject(function (_Model_) {
-    Model = _Model_;
+  var model;
+  beforeEach(inject(function (_model_) {
+    model = _model_;
   }));
-
-  it('should do something', function () {
-    expect(!!Model).toBe(true);
-  });
 
 });

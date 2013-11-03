@@ -1,4 +1,4 @@
-colorvote
+ColorVote
 =========
 
-MeteorJS Realtime voting app with live preview
+Angularjs + NodeJS + Primus + MongoDB
