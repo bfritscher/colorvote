@@ -66,7 +66,6 @@ angular.module('colorvoteApp')
       if(!$scope.showhistory){
         model.getHistory();
       }
-      console.log($scope.showhistory);
       $scope.showhistory=!$scope.showhistory;
     };
     
