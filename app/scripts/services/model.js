@@ -23,27 +23,6 @@ angular.module('colorvoteApp')
         admin: false
       }
     };
-      
-    //user
-    var question = {
-      _id: 1,
-      room: 'test',
-      possibleAnswers: 8,
-      state:'started',
-      vote: 3,
-      c: 1
-    };
-    //admin
-    question = {
-      _id: 1,
-      room: 'test',
-      possibleAnswers: 8,
-      state:'started',
-      dateStarted: new Date(),
-      results: [0, 2, 6, 8, 2, 5, 4, 7]
-      //modified: new Date()
-    };
-    
     //TODO: config url
     var primus = Primus.connect('ws://colorvote.ch');
     var protocol = {

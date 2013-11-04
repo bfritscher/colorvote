@@ -10,8 +10,8 @@ function padLeft(number, size) {
 }
 
 angular.module('colorvoteApp')
-  .controller('AskerCtrl', ['$scope', '$location', '$interval', 'model', '$window',
-  function ($scope, $location, $interval, model, $window) {
+  .controller('AskerCtrl', ['$scope', '$location', '$interval', 'model', '$window', '$routeParams',
+  function ($scope, $location, $interval, model, $window, $routeParams) {
     ga('send', 'pageview', $location.path());
     
     $scope.href = $location.absUrl().replace('/admin', '').replace('/#/', '/#'); //TODO: fix with better solution;
@@ -79,10 +79,10 @@ angular.module('colorvoteApp')
     };
       
     $scope.$on('$destroy', function () {
-      model.leave($scope.data.question.room);
+      model.leave($routeParams.room);
     });
     $window.onbeforeunload = function(){
-      model.leave($scope.data.question.room);
+      model.leave($routeParams.room);
     };
     
     $scope.go = function ( path ) {

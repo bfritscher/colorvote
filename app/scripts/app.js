@@ -64,30 +64,6 @@ app.module.run(['$rootScope', '$location', function ($rootScope, $location) {
   });
 }]);
 
-//TODO: cleanup quickfix for history swiper
-app.module.directive('historyswiper', function() {
-  return function(scope) {
-    var swiper;
-    scope.$watch('$last',function(v){
-      if (v){
-        if(swiper){ swiper.destroy(); }
-        swiper = new Swiper('.history .swiper-container',{
-          pagination: '.pagination',
-          paginationClickable: true,
-          centeredSlides: true,
-          slidesPerView: 'auto',
-          loop: false,
-          watchActiveIndex: true,
-          initialSlide: 0,
-          onFirstInit: function(){
-            //Meteor.setTimeout(function(){document.querySelector('.swiper-wrapper').className='swiper-wrapper';}, 300);
-          }
-        });
-      }
-    });
-  };
-});
-
 gapi.load('auth:client', function () {
   gapi.auth.init();
   angular.element(document).ready(function () {
