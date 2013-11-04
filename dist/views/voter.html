@@ -1,0 +1,23 @@
+<div id="reconnecting" ng-hide="data.online">reconnecting</div>
+<div class="swiper-container voter">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide"><div class="title"></div></div>
+    <div class="swiper-slide"><div class="title"></div></div>
+    <div class="swiper-slide"><div class="title"></div></div>
+  </div>
+  <div class="pagination"></div>
+</div>
+<div class="room-title" ng-bind="data.question.room">room</div>
+<div class="show-card-vote" ng-click="toggleCardVote()"></div>
+<div class="card-vote" ng-show="showCardVote" ng-click="toggleCardVote()">
+  <div class="card-wrapper" ng-repeat="choice in choices | limitTo: data.question.possibleAnswers">
+    <div class="card color-{{$index}}" ng-class="{active: data.question.vote == $index}" ng-click="setVote($index);$event.stopImmediatePropagation();">
+      <div class="title" ng-bind="choice"></div>
+    </div>
+  </div>
+</div>
+<div class="votenow" ng-show="data.question.vote === undefined || data.question.vote === ''">Votez maintenant</div>
+<div class="voting-stopped" ng-show="data.question.state === 'stopped'">
+<h1>Votation terminée</h1>
+</div>
+<div class="backLink" ng-click="go('/')">&lt;</div>

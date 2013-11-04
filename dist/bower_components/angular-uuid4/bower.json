@@ -1,0 +1,31 @@
+{
+  "name": "angular-uuid4",
+  "version": "0.0.3",
+  "dependencies": {
+    "angular": ">0.9.0"
+  },
+  "main": "angular-uuid4.js",
+  "ignore": [
+    ".*",
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src",
+    "test",
+    "Gruntfile",
+    "karma.conf.js",
+    "package.json"
+  ],
+  "devDependencies": {
+    "angular-mocks": ">0.9.0"
+  },
+  "gitHead": "d572a97d099b0d08ae62d7d9839ee8abee9169bf",
+  "readme": "# angular-uuid4\r\n\r\nAngular service that generates RFC4122 version 4 UUIDs / GUIDs.\r\n\r\nSample UUID: `f7e81995-1a52-48a4-88d1-f979e1917b29`\r\n\r\nBased on this [stack overflow post](http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/2117523#2117523) but uses `Date.now()` instead of `new Date().getTime()` for [better performance](http://jsperf.com/date-now-vs-new-date).\r\n\r\n## Usage\r\n\r\nRequire the module in your app and call `uuid4.generate()`.\r\n\r\nExample:\r\n\r\n``` javascript\r\n// add the uuid4 module to your app\r\nmyapp = angular.module('myapp', ['uuid4']);\r\n\r\n// inject it into your component\r\nmyapp.factory('FancyFactory', function(uuid4){\r\n  return {\r\n    codeThatNeedsUUID: function() {\r\n      return \"Look ma! I'm unique: \" + uuid4.generate();\r\n    }\r\n  };\r\n});\r\n```\r\n\r\n## Collisions\r\n\r\nThere are [reports](http://stackoverflow.com/questions/6906916/collisions-when-generating-uuids-in-javascript) of `Math.random()` not working properly on some systems. This causes collisions (UUIDs that are the same). This code uses both `Math.random()` and `Date.now()` to generate the UUID in order to minimize the chance of collisions.\r\n\r\n\r\n\r\n\r\n\r\n",
+  "readmeFilename": "README.md",
+  "_id": "angular-uuid4@0.0.3",
+  "description": "Angular service that generates RFC4122 version 4 UUIDs / GUIDs.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/monicao/angular-uuid4.git"
+  }
+}

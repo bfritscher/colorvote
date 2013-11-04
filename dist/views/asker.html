@@ -1,0 +1,37 @@
+<div ng-include="'views/logo.html'"></div>
+<!-- TODO factor out? -->
+<div class="room-title" ng-bind="data.question.room">room</div>
+<div class="room-stats">{{votes()}}<br><span ng-bind="data.connectedCount">0</span></div>
+<!-- end -->
+<div id="reconnecting" ng-hide="data.online">reconnecting</div>
+<div id="voting-admin-panel">
+  <span class="timer" ng-bind="elapsedTime"></span>
+  <button id="questionAction" ng-class="{new: data.question.state == 'stopped', stop: data.question.state != 'stopped'}" ng-bind="data.question.state == 'stopped' && 'NOUVEAU' || 'TERMINER'" ng-click="questionAction()"></button>
+
+  votes: <span class="votesCount" ng-bind="votes()"></span>
+  <div id="showqrcode" title="afficher le QRCode" ng-click="showqrcode=!showqrcode"><qrcode width="40" height="40" href="href"></qrcode></div>
+  <img id="toggleHistory" alt="afficher historique" title="afficher historique" src="/images/86eaa2ae.history_icon.png" ng-click="toggleHistory()">
+  <img id="toggleResults" alt="afficher résultats" title="afficher résultats" src="/images/ea5b8998.chart_icon.png" ng-click="showresults=!showresults">
+  <div class="backLink" ng-click="go('/')">&lt;</div>
+</div>
+<div class="liveresults" ng-show="showresults">
+  <chart data="data.question.results"></chart>
+  <div ng-show="data.question.state == 'started'">
+    <label>nombres de choix <input type="range" min="2" max="8" ng-model="data.question.possibleAnswers" ng-change="model.possibleAnswers()"></label>
+  </div>
+</div>
+<div id="qrCodePanel" ng-show="showqrcode" ng-click="showqrcode=false">
+  <qrcode href="href"></qrcode>
+  <h1 ng-bind="href"></h1>
+</div>
+<div class="history" ng-show="showhistory">
+  <div class="swiper-container">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide questionHistory" ng-repeat="question in data.history" historyswiper="">
+        <chart data="question.results"></chart>
+        <div class="chart-info">&#916; {{formatTime(question)}} <span class="date">&#64; {{formatDate(question)}}</span><span class="count">N {{question.votes}}</span></div>
+      </div>
+    </div>
+    <div class="pagination"></div>
+  </div>  
+</div>

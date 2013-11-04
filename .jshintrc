@@ -25,6 +25,7 @@
     "Swiper": false,
     "QRCode": false,
     "ga": false,
-    "moment": false
+    "moment": false,
+    "gapi": false
   }
 }

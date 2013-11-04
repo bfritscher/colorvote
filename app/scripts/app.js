@@ -1,11 +1,18 @@
 'use strict';
 var app = {};
 
+var CONFIG = {
+  clientId: '192909161969.apps.googleusercontent.com',
+  scopes: ['https://www.googleapis.com/auth/userinfo.email']
+};
+
 app.module = angular.module('colorvoteApp', [
   'ngRoute',
-  'ngCookies',
-  'uuid4'
+  'uuid4',
+  'LocalStorageModule'
 ]);
+
+app.module.value('config', CONFIG);
 
 app.loadRoomQuestion = function ($route, model) {
   var room = $route.current.params.room;
@@ -16,6 +23,46 @@ app.loadRoomQuestion = function ($route, model) {
 };
 app.loadRoomQuestion.$inject = ['$route', 'model'];
 
+app.loadAdmin = function(model){
+  return model.requireAuth(true).then(function () {
+    return model.authorize();
+  });
+};
+app.loadAdmin.$inject = ['model'];
+
+app.module.config(['$routeProvider', function ($routeProvider) {
+  $routeProvider
+    .when('/', {
+      templateUrl: 'views/main.html',
+      controller: 'MainCtrl'
+    })
+  //TODO FIX room redirect
+  .when('/:room', {
+      templateUrl: 'views/voter.html',
+      controller: 'VoterCtrl',
+      resolve: {
+        question: app.loadRoomQuestion
+      }
+    })
+  .when('/:room/admin', {
+      templateUrl: 'views/asker.html',
+      controller: 'AskerCtrl',
+      resolve: {
+        question: app.loadRoomQuestion,
+        user: app.loadAdmin
+      }
+    })
+    .otherwise({
+      redirectTo: '/'
+    });
+}]);
+
+app.module.run(['$rootScope', '$location', function ($rootScope, $location) {
+  // Error loading room
+  $rootScope.$on('$routeChangeError', function () {
+    $location.path('/');
+  });
+}]);
 
 //TODO: cleanup quickfix for history swiper
 app.module.directive('historyswiper', function() {
@@ -40,37 +87,3 @@ app.module.directive('historyswiper', function() {
     });
   };
 });
-
-app.module.config(['$routeProvider', function ($routeProvider) {
-  $routeProvider
-    .when('/', {
-      templateUrl: 'views/main.html',
-      controller: 'MainCtrl'
-    })
-  //TODO FIX room redirect
-  .when('/:room', {
-      templateUrl: 'views/voter.html',
-      controller: 'VoterCtrl',
-      resolve: {
-        question: app.loadRoomQuestion
-      }
-    })
-  .when('/:room/admin', {
-      templateUrl: 'views/asker.html',
-      controller: 'AskerCtrl',
-      resolve: {
-        question: app.loadRoomQuestion
-      }
-    })
-    .otherwise({
-      redirectTo: '/'
-    });
-}]);
-
-app.module.run(['$rootScope', '$location', function ($rootScope, $location) {
-  // Error loading room
-  $rootScope.$on('$routeChangeError', function () {
-    $location.path('/');
-  });
-}]);
-  

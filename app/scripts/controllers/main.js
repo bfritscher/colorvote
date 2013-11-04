@@ -6,9 +6,7 @@ angular.module('colorvoteApp')
     $scope.data = model.data;
     model.data.question = {};
     model.getRooms();
-    $scope.isAdmin = function(){
-      return true;
-    };
+
     $scope.addRoom = function(){
       var name = $window.prompt('Room name?');
       if(name){
@@ -25,7 +23,7 @@ angular.module('colorvoteApp')
     };
     $scope.go = function ( path ) {
       $scope.$root.loading = true;
-      if($scope.isAdmin()){
+      if($scope.data.admin){
         path += '/admin';
       }
       $location.path( path );
