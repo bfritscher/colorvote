@@ -292,6 +292,26 @@ module.exports = function (grunt) {
           ]
         }
       }
+    },
+    shell: {
+      commitProduction: {
+        command: 'git subtree push --prefix dist origin production',
+        options: {
+          stderr: true,
+          failOnError: true
+        }
+      }
+    },
+    sshconfig:{
+      'colorvote': grunt.file.readJSON('colorvote_secret.json')
+    },
+    sshexec: {
+      deploy: {
+        command: 'cd /home/meteor/colorvote2/colorvote/ && git pull',
+        options: {
+          config: 'colorvote'
+        }
+      }
     }
   });
 
@@ -332,8 +352,15 @@ module.exports = function (grunt) {
     'usemin'
   ]);
 
+  grunt.registerTask('deploy', [
+    'shell:commitProduction',
+    'sshexec:deploy '
+  ]);
+  
   grunt.registerTask('default', [
     'jshint',
     'build'
   ]);
+  
+  
 };
