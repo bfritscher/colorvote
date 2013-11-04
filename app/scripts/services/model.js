@@ -45,7 +45,7 @@ angular.module('colorvoteApp')
     };
     
     //TODO: config url
-    var primus = Primus.connect('ws://debian:3000');
+    var primus = Primus.connect('ws://colorvote.ch');
     var protocol = {
       'q': 'question',
       'r': 'rooms',
