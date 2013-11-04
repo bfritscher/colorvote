@@ -87,3 +87,10 @@ app.module.directive('historyswiper', function() {
     });
   };
 });
+
+gapi.load('auth:client', function () {
+  gapi.auth.init();
+  angular.element(document).ready(function () {
+    angular.bootstrap(document, ['colorvoteApp']);
+  });
+});

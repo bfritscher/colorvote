@@ -1,0 +1,35 @@
+{
+  "name": "angular-localstorage",
+  "version": "0.0.0",
+  "homepage": "http://gregpike.net/demos/angular-local-storage/demo.html",
+  "authors": [
+    "grevory <greg@gregpike.ca>"
+  ],
+  "description": "An Angular module that gives you access to the browser's local storage",
+  "main": "angular-local-storage.js",
+  "keywords": [
+    "AngularJS",
+    "Local Storage"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "angularjs": "*",
+    "angular-mocks": "~1.0.8"
+  },
+  "gitHead": "ecea0d0ec4f77ea608ab1d4a6f6731e0ef10a624",
+  "readme": "angular-local-storage\r\n=====================\r\n\r\nAn Angular module that gives you access to the browsers local storage\r\n\r\nRemember to set your app name (settings.appPrefix) in the settings at the beginning of angular-local-storage.js:\r\n\r\n```javascript\r\nangular.module('LocalStorageModule').value('prefix', 'myPre');\r\nangular.module('testApp', ['LocalStorageModule'])\r\n  .config(function ($routeProvider) {\r\n    ....\r\n});\r\n```\r\n\r\nTo do:\r\n- Add tests\r\n- Expand Readme\r\n\r\nExample use: \r\n\r\n```javascript\r\nangular.module('yourModule', ['LocalStorageModule'])\r\n.controller('yourCtrl', [\r\n  '$scope',\r\n  'localStorageService',\r\n  function($scope, localStorageService) {\r\n    // Start fresh\r\n    localStorageService.clearAll();\r\n    localStorageService.add('Favorite Sport','Ultimate Frisbee');\r\n}]);\r\n```\r\nCheck out the full demo and documentation at http://gregpike.net/demos/angular-local-storage/demo.html\r\n",
+  "readmeFilename": "README.md",
+  "_id": "angular-local-storage@0.0.1",
+  "commit": "ecea0d0ec4f77ea608ab1d4a6f6731e0ef10a624",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/grevory/angular-local-storage.git"
+  }
+}

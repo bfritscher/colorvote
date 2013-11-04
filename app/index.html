@@ -37,7 +37,7 @@
   //var bugsense = new Bugsense( { apiKey: 'b3ee2450' } );
 </script>    
 </head>
-  <body ng-app="colorvoteApp">
+  <body>
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -61,13 +61,13 @@
   <div id="loading" ng-show="loading"><h1>Loading...</h1></div>
   <div class="wrapper" ng-view=""></div>
   
-  
-  <script src="primus/primus.js"></script>
+  <script src="//apis.google.com/js/api.js"></script>
+  <script src="http://colorvote.ch/primus/primus.js"></script>
   <!-- build:js scripts/modules.js -->
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="bower_components/angular-uuid4/angular-uuid4.js"></script>
-  <script src="bower_components/angular-local-storage/angular-local-storage.js"></script>
+  <script src="bower_components/angular-localstorage/angular-local-storage.js"></script>
   <script src="bower_components/moment/min/moment.min.js"></script>
   <script src="bower_components/d3/d3.min.js"></script>
   <script src="scripts/lib/idangerous.swiper-2.2.js"></script>
@@ -83,6 +83,5 @@
   <script src="scripts/directives/chart.js"></script>
   <script src="scripts/services/model.js"></script>
   <!-- endbuild -->
-  <script src="https://apis.google.com/js/client.js"></script>
 </body>
 </html>

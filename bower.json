@@ -9,7 +9,7 @@
     "moment": "~2.4.0",
     "d3": "~3.3.9",
     "angular-uuid4": "~0.0.3",
-    "angular-local-storage": "latest"
+    "angular-localstorage": "latest"
   },
   "devDependencies": {
     "angular-mocks": "~1.2.0-rc.3",
