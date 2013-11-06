@@ -13,6 +13,7 @@ angular.module('colorvoteApp')
   .controller('AskerCtrl', ['$scope', '$location', '$interval', 'model', '$window', '$routeParams',
   function ($scope, $location, $interval, model, $window, $routeParams) {
     ga('send', 'pageview', $location.path());
+    var roomName = $routeParams.room;
     
     $scope.href = $location.absUrl().replace('/admin', '').replace('/#/', '/#'); //TODO: fix with better solution;
     $scope.data = model.data;
@@ -79,10 +80,10 @@ angular.module('colorvoteApp')
     };
       
     $scope.$on('$destroy', function () {
-      model.leave($routeParams.room);
+      model.leave(roomName);
     });
     $window.onbeforeunload = function(){
-      model.leave($routeParams.room);
+      model.leave(roomName);
     };
     
     $scope.go = function ( path ) {

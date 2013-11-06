@@ -4,6 +4,7 @@ angular.module('colorvoteApp')
   .controller('VoterCtrl', ['$scope', '$location', 'model', '$window', '$routeParams',
     function ($scope, $location, model, $window, $routeParams) {
     ga('send', 'pageview', $location.path());
+    var roomName = $routeParams.room;
     
     $scope.data = model.data;
     
@@ -27,10 +28,10 @@ angular.module('colorvoteApp')
     };
 
     $scope.$on('$destroy', function () {
-      model.leave($routeParams.room);
+      model.leave(roomName);
     });
     $window.onbeforeunload = function(){
-      model.leave($routeParams.room);
+      model.leave(roomName);
     };
     
     $scope.$root.loading = false;
