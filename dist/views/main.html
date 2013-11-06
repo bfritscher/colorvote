@@ -1,7 +1,0 @@
-<div ng-include="'views/logo.html'"></div>
-<div class="rooms">
-  <div class="room" ng-repeat="room in data.rooms | orderBy: 'name'" ng-click="go(room.name)">{{room.name}}
-    <span class="rename-room" ng-if="data.admin" ng-click="renameRoom(room);$event.stopImmediatePropagation();">renommer</span>
-  </div>
-  <div class="room add-room" ng-if="data.admin" ng-click="addRoom()">+ Add room</div>
-</div>

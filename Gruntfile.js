@@ -96,7 +96,8 @@ module.exports = function (grunt) {
           ]
         }]
       },
-      server: '.tmp'
+      server: '.tmp',
+      views: ['<%= yeoman.dist %>/views', '<%= yeoman.dist %>/styles/main.css']
     },
     jshint: {
       options: {
@@ -140,10 +141,16 @@ module.exports = function (grunt) {
       dist: {
         files: {
           src: [
-            '<%= yeoman.dist %>/scripts/{,*/}*.js',
             '<%= yeoman.dist %>/styles/{,*/}*.css',
             '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
             '<%= yeoman.dist %>/styles/fonts/*'
+          ]
+        }
+      },
+      js: {
+        files: {
+          src: [
+            '<%= yeoman.dist %>/scripts/{,*/}*.js'
           ]
         }
       }
@@ -210,7 +217,7 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: '<%= yeoman.app %>',
-          src: ['*.html', 'views/*.html'],
+          src: ['*.html', 'views/*.html'], // views handles by ngtemplates
           dest: '<%= yeoman.dist %>'
         }]
       }
@@ -312,6 +319,26 @@ module.exports = function (grunt) {
           config: 'colorvote'
         }
       }
+    },
+    ngtemplates:  {
+      colorvoteApp:        {
+        cwd: '<%= yeoman.dist %>/',
+        src: 'views/**.html',
+        dest: '.tmp/template.js',
+        options:  {
+          concat: '<%= yeoman.dist %>/scripts/scripts.js',
+          htmlmin: {
+            collapseBooleanAttributes:      true,
+            collapseWhitespace:             true,
+            removeAttributeQuotes:          true,
+            removeComments:                 true, // Only if you don't use comment directives!
+            removeEmptyAttributes:          true,
+            removeRedundantAttributes:      true,
+            removeScriptTypeAttributes:     true,
+            removeStyleLinkTypeAttributes:  true
+          }
+        }
+      }
     }
   });
 
@@ -347,9 +374,14 @@ module.exports = function (grunt) {
     'cdnify',
     'ngmin',
     'cssmin',
+    'rev:dist',
+    'usemin',
+    'ngtemplates',
+    'concat',
     'uglify',
-    'rev',
-    'usemin'
+    'rev:js',
+    'usemin',
+    'clean:views'
   ]);
 
   grunt.registerTask('deploy', [
@@ -361,6 +393,5 @@ module.exports = function (grunt) {
     'jshint',
     'build'
   ]);
-  
-  
+
 };
