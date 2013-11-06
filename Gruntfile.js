@@ -354,7 +354,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('deploy', [
     'shell:commitProduction',
-    'sshexec:deploy '
+    'sshexec:deploy'
   ]);
   
   grunt.registerTask('default', [
