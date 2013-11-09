@@ -10,8 +10,7 @@ angular.module('colorvoteApp')
     $scope.addRoom = function(){
       var name = $window.prompt('Room name?');
       if(name){
-        //TODO add room
-        $scope.rooms.push({name: name});
+        model.updateRoom({name: name});
       }
     };
     $scope.renameRoom = function(room){
@@ -19,11 +18,12 @@ angular.module('colorvoteApp')
       if(name && name.length > 0 && name !== room.name){
         //TODO rename room
         room.name = name;
+        model.updateRoom(room);
       }
     };
     $scope.go = function ( path ) {
       $scope.$root.loading = true;
-      if($scope.data.admin){
+      if($scope.data.user.admin){
         path += '/admin';
       }
       $location.path( path );

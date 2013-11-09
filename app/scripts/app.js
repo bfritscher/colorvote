@@ -36,7 +36,20 @@ app.module.config(['$routeProvider', function ($routeProvider) {
       templateUrl: 'views/main.html',
       controller: 'MainCtrl'
     })
-  //TODO FIX room redirect
+    .when('/admin', {
+      templateUrl: 'views/main.html',
+      controller: 'MainCtrl',
+      resolve: {
+        user: app.loadAdmin
+      }
+    })
+    .when('/users', {
+      templateUrl: 'views/users.html',
+      controller: 'UsersCtrl',
+      resolve: {
+        user: app.loadAdmin
+      }
+    })
   .when('/:room', {
       templateUrl: 'views/voter.html',
       controller: 'VoterCtrl',

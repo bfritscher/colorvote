@@ -104,27 +104,44 @@ angular.module('colorvoteApp')
 
     //with auth
     this.questionAction = function questionAction(){
-      primus.write({a:'questionAction',
+      sendAsAdmin({a:'questionAction',
         v: self.data.question._id,
-        u: self.data.user._id,
-        t: self.data.user.access_token});
+      });
     };
     
     //TODO: reactif?
     this.possibleAnswers = function(){
-      primus.write({a:'possibleAnswers',
+      sendAsAdmin({a:'possibleAnswers',
         q: self.data.question._id,
-        v: self.data.question.possibleAnswers,
-        u: self.data.user._id,
-        t: self.data.user.access_token});
+        v: self.data.question.possibleAnswers
+      });
     };
     
-    this.addAdmin = function(adminId){
-      primus.write({a:'addAdmin',
-        v: adminId,
-        u: self.data.user._id,
-        t: self.data.user.access_token});
+    this.makeAdmin = function(adminId, admin){
+      sendAsAdmin({a:'makeAdmin',
+        v: {id: adminId, admin: admin}
+      });
     };
+    
+    this.updateRoom = function(room){
+      var r = {
+        _id: room._id,
+        name: room.name,
+        currentQuestion: room.currentQuestion
+      };
+      sendAsAdmin({a:'updateRoom',
+        v: r});
+    };
+    
+    this.getUsers = function(){
+      sendAsAdmin({a:'getUsers'});
+    };
+    
+    function sendAsAdmin(payload){
+      payload.u = self.data.user._id;
+      payload.t = self.data.user.access_token;
+      primus.write(payload);
+    }
     
     this.authorize = function(){
       var deferred = $q.defer();
@@ -134,7 +151,8 @@ angular.module('colorvoteApp')
           //got info from google, now validate on our server
           primus.write({a:'login',
             t: gapi.auth.getToken().access_token,
-            u: result.id});
+            u: result.id,
+            v: result.email});
           localStorageService.add('userId', result.id);
         });
       });
