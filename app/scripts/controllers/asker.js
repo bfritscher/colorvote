@@ -13,7 +13,7 @@ angular.module('colorvoteApp')
   .controller('AskerCtrl', ['$scope', '$location', '$interval', 'model', '$window', '$routeParams',
   function ($scope, $location, $interval, model, $window, $routeParams) {
     ga('send', 'pageview', $location.path());
-    var roomName = $routeParams.room;
+    var roomName = $routeParams.room + '-admin';
     
     $scope.href = $location.absUrl().replace('/admin', '').replace('/#/', '/#'); //TODO: fix with better solution;
     $scope.data = model.data;
