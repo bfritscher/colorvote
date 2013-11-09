@@ -4,12 +4,12 @@
   "dependencies": {
     "angular": "~1.2.0",
     "angular-route": "~1.2.0",
+    "angular-localstorage": "latest",
+    "angular-uuid4": "~0.0.3",
     "json3": "~3.2.4",
     "es5-shim": "~2.1.0",
     "moment": "~2.4.0",
     "d3": "~3.3.9",
-    "angular-uuid4": "~0.0.3",
-    "angular-localstorage": "latest",
     "swiper": "~2.3.0"
   },
   "devDependencies": {

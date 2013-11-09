@@ -53,7 +53,7 @@ angular.module('colorvoteApp')
           }
           
           if(swiper.activeLoopIndex !== $scope.data.question.vote && $scope.data.question.vote < possibleAnswers){
-            swiper.swipeTo($scope.data.question.vote, 0);
+            swiper.swipeTo($scope.data.question.vote, 300);
           }
         }, true);
         
