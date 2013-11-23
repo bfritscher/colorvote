@@ -48,12 +48,8 @@ table {
 
 /* LAYOUT STYLES */
 body {
-  font-size: 1em;
-  line-height: 1.5; 
-  background: #e7e7e7 url(../images/body-bg.png) 0 0 repeat;
-  font-family: 'Helvetica Neue', Helvetica, Arial, serif;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
-  color: #6d6d6d;
+  background-color: #78C5D6;
+  font: 16px/26px Roboto,'Helvetica Neue', Helvetica, Arial, serif;
 }
 
 a {
@@ -85,13 +81,14 @@ header h2 {
 }
 
 #container {
-  background: transparent url(../images/highlight-bg.jpg) 50% 0 no-repeat;
   min-height: 595px;
 }
 
 .inner {
   width: 620px;
   margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
 }
 
 #container .inner img {
@@ -116,7 +113,6 @@ a.button {
   font-size: 15px;
   padding: 12px 8px 12px 8px;
   display: block;
-  float: left;
   width: 179px;
   margin-right: 14px;  
   background: #fdfdfd; /* Old browsers */
@@ -336,6 +332,67 @@ footer a:hover {
 .clearfix {display: inline-block;}
 * html .clearfix {height: 1%;}
 .clearfix {display: block;}
+
+
+h1.logo{
+  position: absolute;
+  top: 0.67em;
+  left: 16px;
+  color: white;
+  margin: 0;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 2em;
+}
+
+#logo{
+  background-color: #BF62A6;
+  height: 60px;
+}
+
+#logo div{
+  float: left;
+  height: 60px;
+}
+
+#logo div:nth-child(1){
+    background-color: #78C5D6;
+  width: 25%;
+}
+#logo div:nth-child(2){
+    background-color: #459BA8;
+  width: 19.7%;
+}
+#logo div:nth-child(3){
+    background-color: #79C267;
+  width: 15.5%;
+}
+#logo div:nth-child(4){
+    background-color: #C5D647;
+  width: 12.2%;
+}
+#logo div:nth-child(5){
+    background-color: #F5D63D;
+  width: 9.6%;
+}
+#logo div:nth-child(6){
+    background-color: #F28C33;
+  width: 7.5%;
+}
+#logo div:nth-child(7){
+    background-color: #E868A2;
+  width: 5.9%;
+}
+#logo div:nth-child(8){
+    background-color: #BF62A6;
+  width: 4.6%;
+}
+
+.center{
+  text-align: center;
+}
+
+
 
 /* #Media Queries
 ================================================== */
