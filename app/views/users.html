@@ -8,7 +8,7 @@
       <th>Last Seen</th>
     </tr>
     <tr ng-repeat="user in data.users | orderBy: '-lastSeen'" ng-class="{'admin': user.admin}">
-      <td>{{userId(user)}}</td>
+      <td><img class="profilepic" ng-src="https://plus.google.com/s2/photos/profile/{{userId(user)}}?sz=50" alt="{{userId(user)}}"/></td>
       <td>{{user.email}}</td>
       <td><input type="checkbox" ng-model="user.admin" ng-change="makeAdmin(user)" ng-disabled="isDisabled(user)"/></td>
       <td>{{user.lastSeen |date:'yyyy-MM-dd HH:mm'}}</td>

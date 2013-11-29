@@ -298,6 +298,11 @@ h1.logo{
   vertical-align: middle;
 }
 
+.profilepic {
+  width: 50px;
+  height: 50px;
+}
+
 /* ==========================================================================
    HTML5 Boilerplate styles - h5bp.com (generated via initializr.com)
    ========================================================================== */
