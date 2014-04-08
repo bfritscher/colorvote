@@ -145,14 +145,14 @@ angular.module('colorvoteApp')
     
     this.authorize = function(){
       var deferred = $q.defer();
-      gapi.client.load('oauth2', 'v2', function() {
-        var request = gapi.client.oauth2.userinfo.get();
+      gapi.client.load('plus', 'v1', function() {
+        var request = gapi.client.plus.people.get({userId:'me'});
         request.execute(function(result){
           //got info from google, now validate on our server
           primus.write({a:'login',
             t: gapi.auth.getToken().access_token,
             u: result.id,
-            v: result.email});
+            v: result.emails[0].value});
           localStorageService.add('userId', result.id);
         });
       });

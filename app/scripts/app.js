@@ -3,7 +3,7 @@ var app = {};
 
 var CONFIG = {
   clientId: '192909161969.apps.googleusercontent.com',
-  scopes: ['https://www.googleapis.com/auth/userinfo.email']
+  scopes: ['email']
 };
 
 app.module = angular.module('colorvoteApp', [
