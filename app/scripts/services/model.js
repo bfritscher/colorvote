@@ -5,19 +5,20 @@ angular.module('colorvoteApp')
     function model($q, $rootScope, $timeout, uuid4, localStorageService, config) {
     /* jshint camelcase: false */
     // AngularJS will instantiate a singleton by calling "new" on this function
-    
+
     var self = this;
     var deferreds = [];
-    
+
     //create anonymous user
     var userid = localStorageService.get('userId');
     if(null === userid){
       userid = uuid4.generate();
       localStorageService.add('userId', userid);
     }
-    
+
     this.data = {
       connectedCount: 0,
+      rooms: [],
       user: {
         _id: userid,
         admin: false
@@ -58,14 +59,14 @@ angular.module('colorvoteApp')
       }
       self.data.online = true;
     });
-    primus.on('reconnecting', function () {
+    primus.on('reconnect', function () {
       $rootScope.$apply(function(){
         self.data.online = false;
       });
     });
 
     this.getRooms = function getRooms(){
-      primus.write({a:'getRooms'});
+      primus.write({a: 'getRooms'});
     };
 
     this.vote = function vote(){
@@ -108,7 +109,7 @@ angular.module('colorvoteApp')
         v: self.data.question._id,
       });
     };
-    
+
     //TODO: reactif?
     this.possibleAnswers = function(){
       sendAsAdmin({a:'possibleAnswers',
@@ -116,13 +117,13 @@ angular.module('colorvoteApp')
         v: self.data.question.possibleAnswers
       });
     };
-    
+
     this.makeAdmin = function(adminId, admin){
       sendAsAdmin({a:'makeAdmin',
         v: {id: adminId, admin: admin}
       });
     };
-    
+
     this.updateRoom = function(room){
       var r = {
         _id: room._id,
@@ -132,17 +133,17 @@ angular.module('colorvoteApp')
       sendAsAdmin({a:'updateRoom',
         v: r});
     };
-    
+
     this.getUsers = function(){
       sendAsAdmin({a:'getUsers'});
     };
-    
+
     function sendAsAdmin(payload){
       payload.u = self.data.user._id;
       payload.t = self.data.user.access_token;
       primus.write(payload);
     }
-    
+
     this.authorize = function(){
       var deferred = $q.defer();
       gapi.client.load('plus', 'v1', function() {
@@ -174,7 +175,7 @@ angular.module('colorvoteApp')
       deferreds.push(deferred);
       return deferred.promise;
     };
-    
+
     this.requireAuth = function (immediateMode) {
       var token = gapi.auth.getToken();
       var now = Date.now() / 1000;

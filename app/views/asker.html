@@ -1,8 +1,10 @@
-<div ng-include="'views/logo.html'"></div>
+<div>
+  <div ng-include="'views/logo.html'"></div>
 <!-- TODO factor out? -->
 <div class="room-title" ng-bind="data.question.room">room</div>
 <div class="room-stats">{{votes()}}<br/><span ng-bind="data.connectedCount">0</span></div>
 <!-- end -->
+</div>
 <div id="reconnecting" ng-hide="data.online">reconnecting</div>
 <div id="voting-admin-panel">
   <span class="timer" ng-bind="elapsedTime"></span>
@@ -38,5 +40,5 @@
       </div>
     </div>
     <div class="pagination"></div>
-  </div>  
+  </div>
 </div>
