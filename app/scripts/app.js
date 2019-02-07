@@ -2,8 +2,8 @@
 var app = {};
 
 var CONFIG = {
-  clientId: '192909161969.apps.googleusercontent.com',
-  scopes: ['email']
+  client_id: '192909161969.apps.googleusercontent.com',
+  scope: 'email'
 };
 
 app.module = angular.module('colorvoteApp', [
@@ -24,8 +24,8 @@ app.loadRoomQuestion = function ($route, model) {
 app.loadRoomQuestion.$inject = ['$route', 'model'];
 
 app.loadAdmin = function(model){
-  return model.requireAuth(true).then(function () {
-    return model.authorize();
+  return model.requireAuth().then(function (user) {
+    return model.authorize(user);
   });
 };
 app.loadAdmin.$inject = ['model'];

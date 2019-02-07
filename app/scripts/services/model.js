@@ -144,19 +144,15 @@ angular.module('colorvoteApp')
       primus.write(payload);
     }
 
-    this.authorize = function(){
+    this.authorize = function(user){
       var deferred = $q.defer();
-      gapi.client.load('plus', 'v1', function() {
-        var request = gapi.client.plus.people.get({userId:'me'});
-        request.execute(function(result){
-          //got info from google, now validate on our server
-          primus.write({a:'login',
-            t: gapi.auth.getToken().access_token,
-            u: result.id,
-            v: result.emails[0].value});
-          localStorageService.add('userId', result.id);
-        });
-      });
+
+      //got info from google, now validate on our server
+      primus.write({a:'login',
+        t: user.getAuthResponse().access_token,
+        u: user.getBasicProfile().getId(),
+        v: user.getBasicProfile().getEmail()});
+      localStorageService.add('userId', user.getBasicProfile().getId());
       deferred.updated = function(obj){
         if(obj === 'user'){
           deferreds.splice(deferreds.indexOf(deferred),1);
@@ -176,36 +172,19 @@ angular.module('colorvoteApp')
       return deferred.promise;
     };
 
-    this.requireAuth = function (immediateMode) {
-      var token = gapi.auth.getToken();
-      var now = Date.now() / 1000;
-      if (token && ((token.expires_at - now) > (60))) {
-        return $q.when(token);
-      } else {
-        var params = {
-          'client_id': config.clientId,
-          'scope': config.scopes,
-          'immediate': immediateMode
-        };
-        var deferred = $q.defer();
-        var doAuth = function doAuth(){
-          gapi.auth.authorize(params, function (result) {
-            if (result && !result.error) {
-              deferred.resolve(result);
-            } else {
-              //try not immediate
-              if(params.immediate){
-                params.immediate = false;
-                doAuth();
-              }else{
-                deferred.reject(result);
-              }
-            }
-            $rootScope.$digest();
-          });
-        };
-        doAuth();
-        return deferred.promise;
-      }
+    this.requireAuth = function () {
+      var deferred = $q.defer();
+      gapi.load('auth2', function() {
+        gapi.auth2.init(config).then(function(auth2) {
+          if(auth2.currentUser.get().isSignedIn()) {
+            deferred.resolve(auth2.currentUser.get());
+          } else {
+            auth2.signIn().then(function(user){
+              deferred.resolve(user);
+            });
+          }
+        });
+      });
+      return deferred.promise;
     };
   }]);
