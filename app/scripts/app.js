@@ -70,6 +70,10 @@ app.module.config(['$routeProvider', function ($routeProvider) {
     });
 }]);
 
+app.module.config(['$locationProvider', function($locationProvider) {
+  $locationProvider.hashPrefix('');
+}]);
+
 app.module.run(['$rootScope', '$location', function ($rootScope, $location) {
   // Error loading room
   $rootScope.$on('$routeChangeError', function () {
