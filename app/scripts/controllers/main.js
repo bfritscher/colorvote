@@ -5,7 +5,13 @@ angular.module('colorvoteApp')
   function ($scope, $window, $location, model) {
     $scope.data = model.data;
     model.data.question = {};
-    model.getRooms();
+
+    $scope.$watch('data.online', function(value) {
+      console.log(value);
+      if (value) {
+        model.getRooms();
+      }
+    });
 
     $scope.addRoom = function(){
       var name = $window.prompt('Room name?');

@@ -57,7 +57,9 @@ angular.module('colorvoteApp')
       if(self.data.question && self.data.question.room){
         self.join(self.data.question.room);
       }
-      self.data.online = true;
+      $rootScope.$apply(function(){
+        self.data.online = true;
+      });
     });
     primus.on('reconnect', function () {
       $rootScope.$apply(function(){
@@ -66,7 +68,11 @@ angular.module('colorvoteApp')
     });
 
     this.getRooms = function getRooms(){
-      primus.write({a: 'getRooms'});
+      // even if readyState id ok on primus a timeout is needed
+      $timeout(function(){
+        primus.write({a: 'getRooms'});
+      }, 100);
+
     };
 
     this.vote = function vote(){
