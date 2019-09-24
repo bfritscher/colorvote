@@ -185,7 +185,7 @@ angular.module('colorvoteApp')
           if(auth2.currentUser.get().isSignedIn()) {
             deferred.resolve(auth2.currentUser.get());
           } else {
-            auth2.signIn().then(function(user){
+            auth2.signIn(config).then(function(user){
               deferred.resolve(user);
             });
           }

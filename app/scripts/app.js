@@ -81,9 +81,11 @@ app.module.run(['$rootScope', '$location', function ($rootScope, $location) {
   });
 }]);
 
-gapi.load('auth:client', function () {
-  gapi.auth.init();
-  angular.element(document).ready(function () {
-    angular.bootstrap(document, ['colorvoteApp']);
+function init() {
+  gapi.load('auth:client', function () {
+    gapi.auth.init();
+    angular.element(document).ready(function () {
+      angular.bootstrap(document, ['colorvoteApp']);
+    });
   });
-});
+}

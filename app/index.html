@@ -41,8 +41,6 @@
     <div id="loading" ng-show="loading"><h1>Loading...</h1></div>
     <div class="wrapper" ng-view=""></div>
 
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-
     <!-- build:js({.,app}) scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/angular/angular.js"></script>
@@ -70,5 +68,6 @@
     <script src="scripts/directives/swiper.js"></script>
     <script src="scripts/services/model.js"></script>
     <!-- endbuild -->
+    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
   </body>
 </html>
