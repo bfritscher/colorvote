@@ -6,7 +6,7 @@ import router from "./router";
 
 const COLORVOTE_UUID = "COLORVOTE_UUID";
 const COLORVOTE_TOKENS = "COLORVOTE_TOKENS";
-const SOCKET_URL = "localhost:3002";
+const SOCKET_URL = "https://api.colorvote.ch";
 
 export const state = reactive({
   roomName: "",
