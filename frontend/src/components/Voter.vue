@@ -112,12 +112,10 @@ export default {
 
     watchEffect(() => {
       if (state.room && state.room.sessionId !== vote.sessionId) {
-        console.log("set session id", state.room.sessionId);
         vote.sessionId = state.room.sessionId;
         vote.choice = undefined;
       }
       const voteData = JSON.parse(localStorage.getItem(`${COLORVOTE_VOTE_PREFIX}_${state.room?.name}`) || "{}");
-      console.log(voteData, state.room);
       if (voteData && state.room && state.room.sessionId === voteData.sessionId) {
         setVote(voteData.choice);
       }
