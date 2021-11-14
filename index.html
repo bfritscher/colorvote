@@ -1,147 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href="http://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" type="text/css" href="styles/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="styles/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="styles/print.css" media="print" />
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <title>About ColorVote</title>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>ColorVote</title>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css' />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-44448840-1"></script>
     <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', 'UA-44448840-1');
-    ga('send', 'pageview');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-44448840-1');
     </script>
+    <script type="module" crossorigin src="/assets/index.fca3a580.js"></script>
+    <link rel="modulepreload" href="/assets/vendor.767378ee.js">
+    <link rel="stylesheet" href="/assets/index.1cc29f31.css">
+    <script type="module">!function(){try{new Function("m","return import(m)")}catch(o){console.warn("vite: loading legacy build because dynamic import is unsupported, syntax error above should be ignored");var e=document.getElementById("vite-legacy-polyfill"),n=document.createElement("script");n.src=e.src,n.onload=function(){System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))},document.body.appendChild(n)}}();</script>
   </head>
-
   <body>
-  <div><h1 class="logo">ColorVote</h1><div id="logo"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div> 
-    <div id="container">
-      <div class="inner">
-<section id="main_content">
-  <h2>Votation anonyme, rapide et multiplatforme</h2>
-  <p>&nbsp;</p>
-  <h1 class="center"><a href="http://colorvote.ch">colorvote.ch</a></h1>
-  <p>&nbsp;</p>
-   <h3>Présentation</h3>
-    <p class="center"><iframe src="http://www.slideshare.net/slideshow/embed_code/28555735" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen> </iframe></p>
-    <p>Téléchargez le guide: <a href="/downloads/ColorvoteGuide.pdf">ColorvoteGuide.pdf</a></p>
-  
-    <p class="center"><iframe width="620" height="349" src="//www.youtube.com/embed/3us5FfN0BiE?rel=0" frameborder="0" allowfullscreen></iframe></p>
-  
-    <h3>Poster</h3>
-  <p class="center"><a href="/images/colorvote_poster.png"><img src="/images/colorvote_poster_thumb.png" alt="poster" /></a></p>
-  
-  <h3>Inscription à la beta</h3>
-  <p class="center"><iframe style="margin-left:-20px" src="https://docs.google.com/forms/d/1V6xqCzhK6rGhzt_DxG2CF-2BmS2VpIeAahZeZgBFqRg/viewform" width="660" height="850" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" ></iframe></p>
-  
-
-  
-<h3>Contact</h3>
-<p>contact <a href="mailto:boris@colorvote.ch">boris@colorvote.ch</a></p>  
-  
-  <h3>Technique</h3>
-    <p>ColorVote est en phase de test:<br/>
-       - la partie client utilise AngularJS<br/>
-       - la partie serveur utilise NodeJS</p>
-    <p><a href="https://github.com/bfritscher/colorvote" id="view-on-github" class="button"><span>View on GitHub</span></a></p>
-        
-</section>
-
-        <footer>
-          Colorvote is maintained by <a href="https://github.com/bfritscher">Boris Fritscher</a><br>
-          This page was adapted from <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-        
-      </div>
-    </div>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type='text/javascript'>
-      if (typeof jQuery != 'undefined') {
-          var filetypes = /\.(zip|exe|dmg|pdf|doc.*|xls.*|ppt.*|mp3|txt|rar|wma|mov|avi|wmv|flv|wav)$/i;
-          var baseHref = '';
-          if (jQuery('base').attr('href') != undefined) baseHref = jQuery('base').attr('href');
-          var hrefRedirect = '';
-          var timeout;
-       
-          jQuery('body').on('click', 'a', function(event) {
-              var el = jQuery(this);
-              var track = true;
-              var href = (typeof(el.attr('href')) != 'undefined' ) ? el.attr('href') : '';
-              var isThisDomain = href.match(document.domain.split('.').reverse()[1] + '.' + document.domain.split('.').reverse()[0]);
-              if (!href.match(/^javascript:/i)) {
-                  var elEv = []; elEv.value=0, elEv.non_i=false;
-                  if (href.match(/^mailto\:/i)) {
-                      elEv.category = 'email';
-                      elEv.action = 'click';
-                      elEv.label = href.replace(/^mailto\:/i, '');
-                      elEv.loc = href;
-                  }
-                  else if (href.match(filetypes)) {
-                      var extension = (/[.]/.exec(href)) ? /[^.]+$/.exec(href) : undefined;
-                      elEv.category = 'download';
-                      elEv.action = 'click-' + extension[0];
-                      elEv.label = href.replace(/ /g,'-');
-                      elEv.loc = baseHref + href;
-                  }
-                  else if (href.match(/^https?\:/i) && !isThisDomain) {
-                      elEv.category = 'external';
-                      elEv.action = 'click';
-                      elEv.label = href.replace(/^https?\:\/\//i, '');
-                      elEv.non_i = true;
-                      elEv.loc = href;
-                  }
-                  else if (href.match(/^tel\:/i)) {
-                      elEv.category = 'telephone';
-                      elEv.action = 'click';
-                      elEv.label = href.replace(/^tel\:/i, '');
-                      elEv.loc = href;
-                  }
-                  else track = false;
-       
-                  if (track) {
-                      var ret = true;
-       
-                      if((elEv.category == 'external' || elEv.category == 'download') && (el.attr('target') == undefined || el.attr('target').toLowerCase() != '_blank') ) {
-                          hrefRedirect = elEv.loc;
-                          timeout = setTimeout(function(){
-                            window.location.href = hrefRedirect;
-                          }, 2000);
-                          
-                          ga('send','event', elEv.category.toLowerCase(),elEv.action.toLowerCase(),elEv.label.toLowerCase(),elEv.value,{
-                              'nonInteraction': elEv.non_i ,
-                              'hitCallback':gaHitCallbackHandler
-                          });
-                          
-                          
-       
-                          ret = false;
-                      }
-                      else {
-                          ga('send','event', elEv.category.toLowerCase(),elEv.action.toLowerCase(),elEv.label.toLowerCase(),elEv.value,{
-                              'nonInteraction': elEv.non_i
-                          });
-                      }
-       
-                      return ret;
-                  }
-              }
-          });
-       
-          gaHitCallbackHandler = function() {
-              clearTimeout(timeout);
-              window.location.href = hrefRedirect;
-          }
-      }
-      </script>    
+    <div id="app"></div>
+    
+    <script nomodule>!function(){var e=document,t=e.createElement("script");if(!("noModule"in t)&&"onbeforeload"in t){var n=!1;e.addEventListener("beforeload",(function(e){if(e.target===t)n=!0;else if(!e.target.hasAttribute("nomodule")||!n)return;e.preventDefault()}),!0),t.type="module",t.src=".",e.head.appendChild(t),t.remove()}}();</script>
+    <script nomodule id="vite-legacy-polyfill" src="/assets/polyfills-legacy.e6531a51.js"></script>
+    <script nomodule id="vite-legacy-entry" data-src="/assets/index-legacy.6d869b6f.js">System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))</script>
   </body>
 </html>
