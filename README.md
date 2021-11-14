@@ -1,10 +1,12 @@
-ColorVote
-=========
+# ColorVote
 
-Angularjs + NodeJS + Primus + MongoDB
+Voting without account registration for classrooms, single choice up to 8 choices.
 
+[https://colorvote.ch/about](https://colorvote.ch/about)
 
-server:
-https://github.com/bfritscher/colorvote-server
+## Technologies
+Vue.js and Node.js connected via Socket.io
 
-if primus is updated on server side regenerate the static primus client.js
+## Changelog
+
+This is almost a complete rewrite of the original project (angular.js and node.js connected via primus).
