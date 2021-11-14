@@ -2,7 +2,7 @@
 
 Voting without account registration for classrooms, single choice up to 8 choices.
 
-[https://colorvote.ch/about](https://colorvote.ch/about)
+[https://colorvote.ch/#/about](https://colorvote.ch/#/about)
 
 ## Technologies
 Vue.js and Node.js connected via Socket.io
