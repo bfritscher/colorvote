@@ -1,5 +1,5 @@
 <template>
-  <div style="display:flex;flex-direction:column;height:100%;">
+  <div style="display: flex; flex-direction: column; height: 100%">
     <logo></logo>
     <div class="room-title">{{ state.room?.name }}</div>
     <div class="room-stats">
@@ -57,7 +57,7 @@
         </label>
       </div>
     </div>
-    <div style="flex: 1;"></div>
+    <div style="flex: 1"></div>
     <div id="advanced_options">
       Room expires {{ remainingTime }}
       <button @click="extendRoom">extend +1h</button>
@@ -86,7 +86,7 @@ import {
   watchEffect,
 } from "vue";
 import VueQrcode from "vue-qrcode";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import {
   joinRoom,
   leaveRoom,
@@ -110,6 +110,7 @@ export default {
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     watchEffect(() => {
       if (route.params.roomName !== state.room?.name) {
         if (state.room) {
@@ -126,7 +127,10 @@ export default {
       showresults: false,
     });
     const href = computed(() => {
-      return `${window.location.origin}/${state.room?.name}`;
+      return `${window.location.origin}/${router.resolve({
+        name: "voter",
+        params: { rootName: state.room.name },
+      }).href}`;
     });
 
     const votesTotal = computed(() => {
